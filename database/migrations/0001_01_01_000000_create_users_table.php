@@ -16,7 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password');  
+            $table->string('kd_ktm')->nullable();
+            $table->string('kd_smk')->nullable();
+            $table->string('jabatan')->nullable();
+            // $table->foreign('kd_ktm')->references('id')->on('kotamas')->onDelete('cascade');
+            // $table->foreign('kd_smk')->references('id')->on('satminkals')->onDelete('cascade');
+            // $table->foreign('pejabat_id')->references('id')->on('pejabat_satuans')->onDelete('cascade');
+       
             $table->rememberToken();
             $table->timestamps();
         });
