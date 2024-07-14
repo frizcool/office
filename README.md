@@ -1,66 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aplikasi E-Office
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Gambaran Umum
 
-## About Laravel
+E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang dikembangkan menggunakan Laravel dan Filament PHP. Aplikasi ini dirancang untuk memudahkan pengelolaan surat masuk dan surat keluar, dengan fokus pada pengarsipan dan pelacakan surat.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Manajemen Surat Masuk**: Mengelola dan mengarsipkan surat masuk dengan efisien.
+- **Manajemen Surat Keluar**: Mengelola dan melacak surat keluar.
+- **Pencarian dan Pengambilan**: Menemukan arsip surat dengan cepat menggunakan fitur pencarian yang canggih.
+- **Peran dan Izin Pengguna**: Menentukan peran dan izin untuk mengontrol akses dan tindakan dalam sistem.
+- **Dashboard dan Pelaporan**: Menghasilkan laporan dan melihat statistik aktivitas manajemen surat.
+- **Sistem Notifikasi**: Menerima notifikasi untuk kejadian dan tenggat waktu surat yang penting.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Instalasi
 
-## Learning Laravel
+### Prasyarat
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP >= 8.2
+- Composer
+- SQLite (atau database lain yang didukung)
+- Node.js dan npm (untuk kompilasi aset front-end)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Langkah-langkah
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Clone Repositori**
+   ```bash
+   git clone https://github.com/username/e-office.git
+   cd e-office
+   ```
 
-## Laravel Sponsors
+2. **Install Dependensi**
+   ```bash
+   composer install
+   npm install
+   npm run dev
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3. **Konfigurasi Lingkungan**
+   Salin file `.env.example` menjadi `.env` dan atur kredensial database serta variabel lingkungan lainnya.
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-### Premium Partners
+4. **Migrasi dan Seed Database**
+   Jalankan migrasi dan seed database dengan data awal.
+   ```bash
+   php artisan migrate --seed
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+5. **Jalankan Aplikasi**
+   Mulai server pengembangan Laravel.
+   ```bash
+   php artisan serve
+   ```
 
-## Contributing
+## Penggunaan
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Setelah instalasi, Anda dapat mengakses aplikasi dengan menavigasi ke `http://localhost:8000` di peramban web Anda. Masuk dengan kredensial admin default yang disediakan di database seeder.
 
-## Code of Conduct
+### Panel Admin
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Panel admin dibangun menggunakan Filament PHP, menyediakan antarmuka intuitif untuk mengelola pengguna, peran, izin, dan catatan surat. Anda dapat mengakses panel admin di `http://localhost:8000/admin`.
 
-## Security Vulnerabilities
+## Kontribusi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Kami menyambut kontribusi dari komunitas! Untuk berkontribusi, ikuti langkah-langkah berikut:
 
-## License
+1. Fork repositori ini.
+2. Buat cabang baru (`git checkout -b fitur/nama-fitur-anda`).
+3. Lakukan perubahan dan commit (`git commit -m 'Tambah fitur tertentu'`).
+4. Push ke cabang (`git push origin fitur/nama-fitur-anda`).
+5. Buka Pull Request.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Lisensi
+
+Proyek ini dilisensikan di bawah Lisensi MIT - lihat file [LICENSE](LICENSE) untuk detailnya.
+
+## Kontak
+
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, jangan ragu untuk menghubungi kami di support@eoffice.com.
+
+---
+
+Terima kasih telah menggunakan E-Office! Kami berharap aplikasi ini dapat membantu mempermudah proses manajemen perkantoran Anda.
+
+## Biodata Programmer
+
+**Nama:** Fris Wardani, S.Kom.  
+**Pangkat:** Serka  
+**NRP:** 21110057040790  
+**Kesatuan:** Infolahtadam III/Slw
