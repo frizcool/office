@@ -126,7 +126,6 @@ class DisposisisRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->after(function ($record, $data) {
-                        // dd($record);
                         $this->notifyUsers($data['disposisi_kepada'], 'New Disposisi Assigned', route('filament.admin.resources.surat-masuks.edit', $record->surat_masuk_id));
                     }),
             ])

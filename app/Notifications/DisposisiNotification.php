@@ -35,6 +35,15 @@ class DisposisiNotification extends Notification
         return ['database', 'broadcast'];
     }
 
+
+
+    public function toArray($notifiable)
+    {
+        return [
+            'message' => $this->details['message'],
+            'url' => $this->details['url'],
+        ];
+    }
     /**
      * Get the array representation of the notification.
      *

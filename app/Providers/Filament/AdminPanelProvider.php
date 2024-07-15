@@ -78,8 +78,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            
-            ->databaseNotifications()
+            ->databaseNotifications()            
+            ->databaseNotificationsPolling('5s')
             ->plugins([
                 FilamentBackgroundsPlugin::make()
                     ->remember(900)

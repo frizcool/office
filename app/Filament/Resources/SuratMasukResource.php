@@ -216,8 +216,7 @@ class SuratMasukResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
-                
+                //                
                 SelectFilter::make('klasifikasi_id')->label('Klasifikasi')
                     ->options(fn (): array => KlasifikasiSurat::query()->pluck('ur_klasifikasi', 'id')->all())
             ])
