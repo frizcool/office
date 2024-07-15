@@ -26,8 +26,8 @@ E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang
 
 1. **Clone Repositori**
    ```bash
-   git clone https://github.com/username/e-office.git
-   cd e-office
+   git clone https://github.com/frizcool/office.git
+   cd office
    ```
 
 2. **Install Dependensi**
