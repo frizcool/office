@@ -12,6 +12,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use Filament\Forms\Components\Section;
+use App\Notifications\DisposisiNotification;
+use Filament\Notifications\Notification;
+
 class DisposisisRelationManager extends RelationManager
 {
     protected static string $relationship = 'disposisis';
@@ -28,25 +31,37 @@ class DisposisisRelationManager extends RelationManager
         }
 
         $roleHierarchy = [
-            'eselon_pimpinan' => ['eselon_pimpinan','eselon_pembantu_pimpinan', 'eselon_pelaksana'],
-            'eselon_pembantu_pimpinan' => ['eselon_pembantu_pimpinan','eselon_pelaksana'],
+            'eselon_pimpinan' => ['eselon_pimpinan', 'eselon_pembantu_pimpinan', 'eselon_pelaksana'],
+            'eselon_pembantu_pimpinan' => ['eselon_pembantu_pimpinan', 'eselon_pelaksana'],
         ];
 
         $currentUserRole = $currentUser->getRoleNames()->first();
         $higherLevelRoles = $roleHierarchy[$currentUserRole] ?? [];
 
-          if (!empty($higherLevelRoles)) {
-              // Fetch users with the higher level roles, excluding the current user
-              return User::role($higherLevelRoles)
-                  ->where('id', '!=', $currentUserId)
-                  ->pluck('jabatan', 'id');
-          }
-  
-          // If no higher level roles are found, return an empty collection
-          return collect([]);
+        if (!empty($higherLevelRoles)) {
+            return User::role($higherLevelRoles)
+                ->where('id', '!=', $currentUserId)
+                ->pluck('jabatan', 'id');
+        }
+
+        return collect([]);
     }
 
+    protected function notifyUsers($disposisiTujuan, $message, $url)
+    {
+        $details = [
+            'message' => $message,
+            'url' => $url
+        ];
+        // dd($disposisiTujuan);
 
+        foreach ($disposisiTujuan as $userId) {
+            $user = User::find($userId);
+            if ($user) {
+                $user->notify(new DisposisiNotification($details));
+            }
+        }
+    }
     public function form(Form $form): Form
     {
         return $form
@@ -61,34 +76,29 @@ class DisposisisRelationManager extends RelationManager
                         Forms\Components\CheckboxList::make('disposisi_list_id')
                             ->label('Disposisi')
                             ->options(DisposisiList::all()->pluck('ur_disposisi_list', 'id'))
-                            ->required()->columns(4),
-                            
-                    ]), 
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:4008917045.
+                            ->required()
+                            ->columns(4),
+                    ]),
                 Section::make('Detail Disposisi')
                     ->schema([
                         Forms\Components\Textarea::make('isi')
-                            // ->required()
                             ->label('Uraian Disposisi'),
-                        Forms\Components\TextInput::make('user_id')
+                        Forms\Components\Hidden::make('user_id')
                             ->default(Auth::user()->id)
-                            ->required()
-                            ->hidden()
-                            ,
+                            ->required(),
                         Forms\Components\DatePicker::make('tanggal_disposisi')
                             ->required()
                             ->label('Tanggal Disposisi')
                             ->default(now()),
                         SignaturePad::make('paraf')
-                            ->label(__('Paraf disini'))        
-                            ->exportPenColor('#000')                     
-                            ->penColor('#000')                  // Pen color on light mode
-                            ->penColorOnDark('#fff')            // Pen color on dark mode (defaults to penColor)
-                            ->exportPenColor('#00f')  
-                            ,
+                            ->label(__('Paraf disini'))
+                            ->exportPenColor('#000')
+                            ->penColor('#000') // Pen color on light mode
+                            ->penColorOnDark('#fff') // Pen color on dark mode (defaults to penColor)
+                            ->exportPenColor('#00f'),
                         Forms\Components\Textarea::make('catatan')
                             ->label('Catatan')
-                    ])->columns(2), 
+                    ])->columns(2),
                 ])
             ->columns(1);
     }
@@ -114,16 +124,19 @@ class DisposisisRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->after(function ($record, $data) {
+                        // dd($record);
+                        $this->notifyUsers($data['disposisi_kepada'], 'New Disposisi Assigned', route('filament.admin.resources.surat-masuks.edit', $record->surat_masuk_id));
+                    }),
             ])
             ->actions([
                 Tables\Actions\Action::make('print')
                     ->label('Cetak Disposisi')
                     ->color('warning')
                     ->icon('heroicon-o-printer')
-                    ->url(fn ($record) => route('disposisi.print', $record), shouldOpenInNewTab: true)
-                    ,
-                Tables\Actions\ActionGroup::make([               
+                    ->url(fn ($record) => route('disposisi.print', $record), shouldOpenInNewTab: true),
+                Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
