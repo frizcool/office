@@ -13,7 +13,7 @@ class DisposisiNotification extends Notification
     use Queueable;
 
     private $details;
-
+    
     /**
      * Create a new notification instance.
      *
@@ -57,6 +57,7 @@ class DisposisiNotification extends Notification
             'url' => $this->details['url']
         ];
     }
+
 
     /**
      * Get the broadcastable representation of the notification.

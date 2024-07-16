@@ -102,15 +102,16 @@ class DisposisisRelationManager extends RelationManager
                 ])
             ->columns(1);
     }
-
     public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('nomor_agenda')
             ->columns([
+                Tables\Columns\TextColumn::make('user.jabatan')
+                    ->label('Disposisi Dari'),
                 Tables\Columns\TextColumn::make('penerimaDisposisi')
                     ->label('Penerima Disposisi')
-                    ->sortable()->badge(),
+                    ->badge(),
                 Tables\Columns\TextColumn::make('isi')
                     ->label('Isi Disposisi')
                     ->searchable(),

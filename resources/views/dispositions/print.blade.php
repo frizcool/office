@@ -33,7 +33,10 @@
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 20mm;
+                margin: 0; /* Set margin to none */
+            }
+            body {
+                margin: 0; /* Remove margin for the body as well */
             }
         }
     </style>
@@ -46,8 +49,13 @@
 </head>
 
     @php
+        use Carbon\Carbon;
+
         $disposisi_kepada = $disposisi->disposisi_kepada;
         $disposisi_list_id = $disposisi->disposisi_list_id ;
+        $tanggal_surat = Carbon::parse($disposisi->suratMasuk->tanggal_surat)->format('d-m-Y');
+        $tanggal_agenda = Carbon::parse($disposisi->suratMasuk->tanggal_agenda)->format('d-m-Y');
+        $tanggal_disposisi = Carbon::parse($disposisi->tanggal_disposisi)->format('d-m-Y');
     @endphp
 <body>
     <div class="container my-4">        
@@ -85,9 +93,9 @@
                 </tr>
                 <tr>
                     <td class="text-uppercase">Tanggal Surat</td>
-                    <td>: {{ $disposisi->suratMasuk->tanggal_surat }}</td>
+                    <td>: {{ $tanggal_surat }}</td>
                     <td class="text-uppercase">Tanggal</td>
-                    <td>: {{ $disposisi->suratMasuk->tanggal_agenda }}</td>
+                    <td>: {{ $tanggal_agenda }}</td>
                 </tr>
                 <tr>
                     <td class="text-uppercase">Perihal</td>
@@ -142,7 +150,7 @@
         <div class="row mt-2">
                 <div class="col-md-6">Paraf : <img src="{{ $disposisi->paraf }}" alt="Paraf" /></div>
                 <div class="col-md-6"><div class="text-end">
-            <p>Tgl Disposisi: {{ $disposisi->tanggal_disposisi }}</p>
+            <p>Tgl Disposisi: {{ $tanggal_disposisi }}</p>
         </div></div>
         </div>
                     

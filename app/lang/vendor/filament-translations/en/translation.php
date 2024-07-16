@@ -39,5 +39,6 @@ return [
         "pt_BR" => "Português (Brasil)",
         "my" => "Burmese",
         "de" => "German",
+        "id" => "Indonesian",
     ]
 ];
