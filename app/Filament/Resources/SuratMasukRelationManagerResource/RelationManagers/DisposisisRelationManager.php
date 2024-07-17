@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Resources\SuratMasukRelationManagerResource\RelationManagers;
 
 use Filament\Forms;
@@ -12,8 +11,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use Filament\Forms\Components\Section;
-use App\Notifications\DisposisiNotification;
+use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
+use App\Filament\Resources\SuratMasukResource;
 
 class DisposisisRelationManager extends RelationManager
 {
@@ -47,21 +47,6 @@ class DisposisisRelationManager extends RelationManager
         return collect([]);
     }
 
-    protected function notifyUsers($disposisiTujuan, $message, $url)
-    {
-        $details = [
-            'message' => $message,
-            'url' => $url
-        ];
-        // dd($disposisiTujuan);
-
-        foreach ($disposisiTujuan as $userId) {
-            $user = User::find($userId);
-            if ($user) {
-                $user->notify(new DisposisiNotification($details));
-            }
-        }
-    }
     public function form(Form $form): Form
     {
         return $form
@@ -102,6 +87,7 @@ class DisposisisRelationManager extends RelationManager
                 ])
             ->columns(1);
     }
+
     public function table(Table $table): Table
     {
         return $table
@@ -126,9 +112,26 @@ class DisposisisRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->after(function ($record, $data) {
-                        $this->notifyUsers($data['disposisi_kepada'], 'New Disposisi Assigned', route('filament.admin.resources.surat-masuks.edit', $record->surat_masuk_id));
-                    }),
+                    ->after(
+                        function ($record, $data) {
+                            // dd($record->suratMasuk->nomor_agenda);
+                            foreach ($data['disposisi_kepada'] as $kepada) {
+                                Notification::make()
+                                    ->title(__('notifications.new_disposisi'))
+                                    ->icon('heroicon-o-document-check')
+                                    ->body(
+                                        "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratMasuk->nomor_agenda} <br>".
+                                        "<b>" . __('notifications.subject') . ":</b> {$record->suratMasuk->perihal} <br>"
+                                    )
+                                    ->actions([
+                                        Action::make(__('notifications.view'))
+                                            ->url(SuratMasukResource::getUrl('edit', ['record' => $record->surat_masuk_id])),
+                                    ])
+                                    ->success()
+                                    ->sendToDatabase(User::find($kepada));
+                            }
+                        }
+                    ),
             ])
             ->actions([
                 Tables\Actions\Action::make('print')

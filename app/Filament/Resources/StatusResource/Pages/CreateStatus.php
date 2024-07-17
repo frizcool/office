@@ -11,17 +11,23 @@ use Filament\Notifications\Notification;
 class CreateStatus extends CreateRecord
 {
     protected static string $resource = StatusResource::class;
-    protected function afterCreate(): void
-    {
-        Notification::make()
-        ->title('Saved successfully')
-        ->icon('heroicon-o-document-text')
-        ->iconColor('success')
-        ->send();
-        $recipient = auth()->user();
+    // protected function afterCreate(): void
+    // {
+    //     $user = auth()->user();
  
-        Notification::make()
-            ->title('Saved successfully')
-            ->sendToDatabase($recipient);
-    }
+    //     /** @var Order $order */
+    //     $order = $this->record;
+    //     // dd($order);
+    //     Notification::make()
+    //         ->title(__('notifications.new_incoming_letter'))
+    //         ->icon('heroicon-c-inbox-arrow-down')
+    //         ->body(
+    //             "<b>" . __('notifications.number_agenda') . ":</b> {$order->ur_status} <br>" 
+    //         )
+    //         ->actions([
+    //             Action::make(__('notifications.view'))
+    //                 ->url(''),
+    //         ])
+    //         ->sendToDatabase($user);
+    // }
 }
