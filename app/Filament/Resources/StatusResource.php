@@ -12,7 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+// use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Notification;
+ 
 class StatusResource extends Resource
 {
     protected static ?string $model = Status::class;
@@ -22,6 +24,7 @@ class StatusResource extends Resource
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 6;
     protected static ?string $navigationLabel = 'Status';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -34,7 +37,7 @@ class StatusResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('ur_status')
+                Tables\Columns\TextColumn::make('ur_status')->label('Uraian Status')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

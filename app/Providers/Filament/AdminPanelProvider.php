@@ -21,6 +21,7 @@ use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Swis\Filament\Backgrounds\ImageProviders\MyImages;
 use Filament\Notifications\Livewire\DatabaseNotifications;
+ 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -78,8 +79,8 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->databaseNotifications()            
-            ->databaseNotificationsPolling('30s')
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('5s')
             ->plugins([
                 FilamentBackgroundsPlugin::make()
                     ->remember(900)
