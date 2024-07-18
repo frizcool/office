@@ -22,7 +22,8 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Joaopaulolndev\FilamentPdfViewer\Forms\Components\PdfViewerField;
 use Filament\Forms\Components\Section;
-
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Filament\Forms\Get;
 class SuratMasukResource extends Resource
 {
     protected static ?string $model = SuratMasuk::class;
@@ -194,20 +195,24 @@ class SuratMasukResource extends Resource
                     ->collapsible(),
     
                 Section::make(__('form.attachments'))
-                    ->schema([
-                        Forms\Components\FileUpload::make('lampiran_surat_masuk')
-                            ->label(__('form.incoming_attachments'))
-                            ->required()
-                            ->multiple()
-                            ->appendFiles()
-                            ->openable()
-                            ->uploadingMessage('Uploading attachment...')
-                            ->acceptedFileTypes(['application/pdf'])
-                            ->directory('Surat_Masuk/' . Carbon::now()->format('Y'))
-                            ->preserveFilenames(),
-                        PdfViewerField::make('lampiran_surat_masuk')
-                            ->label(__('form.preview_attachments')),
-                    ])
+                ->schema([
+                    Forms\Components\FileUpload::make('lampiran_surat_masuk')
+                        ->label(__('form.incoming_attachments'))
+                        ->required()
+                        ->multiple()
+                        ->appendFiles()
+                        ->openable()
+                        ->uploadingMessage('Uploading attachment...')
+                        ->acceptedFileTypes(['application/pdf'])
+                        ->directory('Surat_Masuk/' . Carbon::now()->format('Y'))
+                        ->getUploadedFileNameForStorageUsing(function (Get $get,TemporaryUploadedFile $file) {
+                            $nomorAgenda = str_replace([' ', '/'], '_', $get('nomor_agenda'));
+                            return Carbon::now()->format('d_m_Y').'_'.$nomorAgenda . '.' . $file->getClientOriginalExtension();
+                        }),
+                    PdfViewerField::make('lampiran_surat_masuk')
+                        ->label(__('form.preview_attachments')),
+                ])
+                
                     ->columns(2)
                     ->collapsible(),
             ])
@@ -225,7 +230,7 @@ class SuratMasukResource extends Resource
                     ->badge()
                     ->getStateUsing(function (SuratMasuk $record) {
                         $lastDisposisi = $record->disposisis()->latest()->first();
-                        return $lastDisposisi && $lastDisposisi->user ? "Sudah di disposisi oleh " . $lastDisposisi->user->jabatan : "Menunggu disposisi";
+                        return $lastDisposisi && $lastDisposisi->user ? "Disposisi oleh " . $lastDisposisi->user->jabatan : "Menunggu disposisi";
                     }),
                 Tables\Columns\TextColumn::make('tanggal_agenda')
                     ->label(__('form.agenda_date'))

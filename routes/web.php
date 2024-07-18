@@ -10,6 +10,7 @@ Route::get('/welcome', function () {
 });
 
 Route::get('/disposisi/{id}/print', [DispositionController::class, 'print'])->name('disposisi.print');
+Route::get('/disposisi/{id}/print_v2', [DispositionController::class, 'print_v2'])->name('disposisi.print_v2');
 
 
  

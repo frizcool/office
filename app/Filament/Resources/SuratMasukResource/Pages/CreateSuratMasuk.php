@@ -26,6 +26,7 @@ class CreateSuratMasuk extends CreateRecord
          // Get all users with the 'eselon_pimpinan' role
          $pimpinanUsers = User::role('eselon_pimpinan')->get();
  
+
          foreach ($pimpinanUsers as $pimpinanUser) {
              Notification::make()
                  ->title(__('notifications.new_incoming_letter'))
@@ -37,7 +38,8 @@ class CreateSuratMasuk extends CreateRecord
                  )
                  ->actions([
                      Action::make(__('notifications.view'))
-                         ->url(SuratMasukResource::getUrl('edit', ['record' => $data])),
+                         ->url(SuratMasukResource::getUrl('edit', ['record' => $data]))
+                         ->markAsRead(),
                  ])
                  ->sendToDatabase($pimpinanUser);
          }

@@ -46,9 +46,49 @@ class DisposisisRelationManager extends RelationManager
 
         return collect([]);
     }
+    protected function getRoleByUserId($userId)
+    {
+        $user = User::find($userId);
+        return $user ? $user->getRoleNames()->first() : null;
+    }
 
     public function form(Form $form): Form
     {
+        $currentUser = Auth::user();
+        $currentUserRole = $currentUser->getRoleNames()->first();
+
+        if ($currentUserRole === 'eselon_pembantu_pimpinan') {
+            return $form
+                ->schema([
+                    Section::make('Tujuan Disposisi')
+                        ->schema([
+                            Forms\Components\CheckboxList::make('disposisi_kepada')
+                                ->label('Disposisi Kepada')
+                                ->options($this->getUsersByRole())
+                                ->required()
+                                ->columns(4),
+                        ]),
+                    Section::make('Detail Disposisi')
+                        ->schema([
+                            Forms\Components\Textarea::make('isi')
+                                ->label('Uraian Disposisi'),
+                            Forms\Components\Hidden::make('user_id')
+                                ->default(Auth::user()->id)
+                                ->required(),
+                            Forms\Components\DatePicker::make('tanggal_disposisi')
+                                ->required()
+                                ->label('Tanggal Disposisi')
+                                ->default(now()),
+                            SignaturePad::make('paraf')
+                                ->label(__('Paraf disini'))
+                                ->exportPenColor('#000')
+                                ->penColor('#000')
+                                ->penColorOnDark('#fff')
+                                ->exportPenColor('#00f'),
+                        ])->columns(2),
+                ])
+                ->columns(1);
+        }
         return $form
             ->schema([
                 Section::make('Tujuan Disposisi')
@@ -78,13 +118,13 @@ class DisposisisRelationManager extends RelationManager
                         SignaturePad::make('paraf')
                             ->label(__('Paraf disini'))
                             ->exportPenColor('#000')
-                            ->penColor('#000') // Pen color on light mode
-                            ->penColorOnDark('#fff') // Pen color on dark mode (defaults to penColor)
+                            ->penColor('#000')
+                            ->penColorOnDark('#fff')
                             ->exportPenColor('#00f'),
-                        Forms\Components\Textarea::make('catatan')
-                            ->label('Catatan')
+                        // Forms\Components\Textarea::make('catatan')
+                        //     ->label('Catatan')
                     ])->columns(2),
-                ])
+            ])
             ->columns(1);
     }
 
@@ -99,7 +139,7 @@ class DisposisisRelationManager extends RelationManager
                     ->label('Penerima Disposisi')
                     ->badge(),
                 Tables\Columns\TextColumn::make('isi')
-                    ->label('Isi Disposisi')
+                    ->label('Isi Disposisi')->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal_disposisi')
                     ->label('Tanggal Disposisi')
@@ -114,7 +154,6 @@ class DisposisisRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->after(
                         function ($record, $data) {
-                            // dd($record->suratMasuk->nomor_agenda);
                             foreach ($data['disposisi_kepada'] as $kepada) {
                                 Notification::make()
                                     ->title(__('notifications.new_disposisi'))
@@ -125,7 +164,7 @@ class DisposisisRelationManager extends RelationManager
                                     )
                                     ->actions([
                                         Action::make(__('notifications.view'))
-                                            ->url(SuratMasukResource::getUrl('edit', ['record' => $record->surat_masuk_id])),
+                                            ->url(SuratMasukResource::getUrl('edit', ['record' => $record->surat_masuk_id]))->markAsRead(),
                                     ])
                                     ->success()
                                     ->sendToDatabase(User::find($kepada));
@@ -135,10 +174,15 @@ class DisposisisRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\Action::make('print')
-                    ->label('Cetak Disposisi')
-                    ->color('warning')
+                    ->label('')
+                    ->color('primary')
                     ->icon('heroicon-o-printer')
-                    ->url(fn ($record) => route('disposisi.print', $record), shouldOpenInNewTab: true),
+                    ->url(function ($record) {
+                        $userRole = $this->getRoleByUserId($record->user_id);
+                        return $userRole === 'eselon_pembantu_pimpinan'
+                            ? route('disposisi.print_v2', $record)
+                            : route('disposisi.print', $record);
+                    }, shouldOpenInNewTab: true),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
