@@ -7,6 +7,7 @@ return [
     'detail_surat' => 'Letter Details',
     'received_from' => 'Received From',
     'letter_number' => 'Letter Number',
+    'generate_automatic'=> 'Generate Automatic',
     'letter_date' => 'Letter Date',
     'classification' => 'Letter Classification',
     'status' => 'Letter Status',

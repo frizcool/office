@@ -29,6 +29,20 @@ class SuratMasuk extends Model
     {
         return $this->hasMany(Disposisi::class, 'surat_masuk_id');
     }
+    public function lemari()
+    {
+        return $this->belongsTo(Lemari::class, 'lemari_id');
+    }
+
+    public function loker()
+    {
+        return $this->belongsTo(Loker::class, 'loker_id');
+    }
+
+    public function rak()
+    {
+        return $this->belongsTo(Rak::class, 'rak_id');
+    }
     protected $casts = [
         'lampiran_surat_masuk' => 'array',
     ];

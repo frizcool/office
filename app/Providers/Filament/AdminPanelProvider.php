@@ -102,7 +102,7 @@ class AdminPanelProvider extends PanelProvider
                 // \TomatoPHP\FilamentTranslations\FilamentTranslationsPlugin::make(),
                 // \TomatoPHP\FilamentTranslations\FilamentTranslationsPlugin::make()->allowGPTScan(),
                 \TomatoPHP\FilamentTranslations\FilamentTranslationsSwitcherPlugin::make(),
-                \TomatoPHP\FilamentSettingsHub\FilamentSettingsHubPlugin::make(),
+                // \TomatoPHP\FilamentSettingsHub\FilamentSettingsHubPlugin::make(),
             ]) 
             ->resources([
                 config('filament-logger.activity_resource')

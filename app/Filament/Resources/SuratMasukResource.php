@@ -10,24 +10,21 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Models\Satminkal;
-use App\Models\Status;
-use App\Models\Sifat;
-use App\Models\KlasifikasiSurat;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Contracts\Support\Htmlable;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Model;
 use Joaopaulolndev\FilamentPdfViewer\Forms\Components\PdfViewerField;
 use Filament\Forms\Components\Section;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Filament\Forms\Get;
+use App\Models\Satminkal;
+use App\Models\Status;
+use App\Models\Sifat;
+use App\Models\KlasifikasiSurat;
+use Illuminate\Support\Str;
 class SuratMasukResource extends Resource
 {
     protected static ?string $model = SuratMasuk::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-inbox-arrow-down';
     protected static ?int $navigationSort = 2;
 
@@ -51,16 +48,16 @@ class SuratMasukResource extends Resource
         return trans('global.label_incoming_letter_management');
     }
 
-
-
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('kd_ktm', auth()->user()->kd_ktm)->where('kd_smk', auth()->user()->kd_smk);
+        return parent::getEloquentQuery()
+            ->where('kd_ktm', auth()->user()->kd_ktm)
+            ->where('kd_smk', auth()->user()->kd_smk);
     }
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['nomor_agenda', 'nomor_surat', 'perihal','terima_dari'];
+        return ['nomor_agenda', 'nomor_surat', 'perihal', 'terima_dari'];
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -88,19 +85,19 @@ class SuratMasukResource extends Resource
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
         $romanMonth = self::getRomanMonth($currentMonth);
-        
         if ($lastRecord) {
-            $lastNumber = intval(explode('/', $lastRecord->nomor_agenda)[1]) + 1;
+            $lastRecordYear = Carbon::parse($lastRecord->created_at)->year;
+            $lastNumber = ($lastRecordYear === $currentYear) ? intval(explode('/', $lastRecord->nomor_agenda)[1]) + 1 : 1;
         } else {
             $lastNumber = 1;
         }
-
         return 'AGD/' . $lastNumber . '/' . $romanMonth . '/' . $currentYear;
     }
 
     public static function form(Form $form): Form
     {
         $isEdit = request()->routeIs('filament.admin.resources.surat-masuks.edit');
+
         return $form
             ->schema([
                 Section::make(__('form.general_information'))
@@ -108,31 +105,23 @@ class SuratMasukResource extends Resource
                         Forms\Components\TextInput::make('nomor_agenda')
                             ->label(__('form.no_agenda'))
                             ->required()
-                            ->default(
-                                function () {
-                                    return self::generateNomorAgenda();
-                                }
-                            )
+                            ->helperText(__('form.generate_automatic'))
+                            ->default(fn() => self::generateNomorAgenda())
                             ->prefixIcon('heroicon-m-inbox-stack')
+
                             ->prefixIconColor('success'),
                         Forms\Components\DatePicker::make('tanggal_agenda')
                             ->label(__('form.agenda_date'))
+                            ->helperText(__('form.generate_automatic'))
                             ->required()
-                            ->default(
-                                function () {
-                                    return Carbon::now();
-                                }
-                            )
+                            ->default(fn() => Carbon::now())
                             ->prefixIcon('heroicon-o-calendar')
                             ->prefixIconColor('primary'),
                         Forms\Components\TimePicker::make('waktu_agenda')
                             ->label(__('form.agenda_time'))
                             ->required()
-                            ->default(
-                                function () {
-                                    return Carbon::now();
-                                }
-                            )
+                            ->helperText(__('form.generate_automatic'))
+                            ->default(fn() => Carbon::now())
                             ->prefixIcon('heroicon-o-clock')
                             ->prefixIconColor('warning'),
                     ])
@@ -141,10 +130,8 @@ class SuratMasukResource extends Resource
     
                 Section::make(__('form.detail_surat'))
                     ->schema([
-                        Forms\Components\Hidden::make('kd_ktm')
-                            ->default(auth()->user()->kd_ktm),
-                        Forms\Components\Hidden::make('kd_smk')
-                            ->default(auth()->user()->kd_smk),
+                        Forms\Components\Hidden::make('kd_ktm')->default(auth()->user()->kd_ktm),
+                        Forms\Components\Hidden::make('kd_smk')->default(auth()->user()->kd_smk),
                         Forms\Components\TextInput::make('terima_dari')
                             ->label(__('form.received_from'))
                             ->required()
@@ -152,17 +139,13 @@ class SuratMasukResource extends Resource
                             ->prefixIconColor('info'),
                         Forms\Components\TextInput::make('nomor_surat')
                             ->label(__('form.letter_number'))
-                            ->required()
+                            ->required()   
                             ->prefixIcon('heroicon-o-document-text')
                             ->prefixIconColor('secondary'),
                         Forms\Components\DatePicker::make('tanggal_surat')
                             ->label(__('form.letter_date'))
                             ->required()
-                            ->default(
-                                function () {
-                                    return Carbon::now();
-                                }
-                            )
+                            ->default(fn() => Carbon::now())
                             ->prefixIcon('heroicon-o-calendar')
                             ->prefixIconColor('primary'),
                         Forms\Components\Select::make('klasifikasi_id')
@@ -195,24 +178,24 @@ class SuratMasukResource extends Resource
                     ->collapsible(),
     
                 Section::make(__('form.attachments'))
-                ->schema([
-                    Forms\Components\FileUpload::make('lampiran_surat_masuk')
-                        ->label(__('form.incoming_attachments'))
-                        ->required()
-                        ->multiple()
-                        ->appendFiles()
-                        ->openable()
-                        ->uploadingMessage('Uploading attachment...')
-                        ->acceptedFileTypes(['application/pdf'])
-                        ->directory('Surat_Masuk/' . Carbon::now()->format('Y'))
-                        ->getUploadedFileNameForStorageUsing(function (Get $get,TemporaryUploadedFile $file) {
-                            $nomorAgenda = str_replace([' ', '/'], '_', $get('nomor_agenda'));
-                            return Carbon::now()->format('d_m_Y').'_'.$nomorAgenda . '.' . $file->getClientOriginalExtension();
-                        }),
-                    PdfViewerField::make('lampiran_surat_masuk')
-                        ->label(__('form.preview_attachments')),
-                ])
-                
+                    ->schema([
+                        Forms\Components\FileUpload::make('lampiran_surat_masuk')
+                            ->label(__('form.incoming_attachments'))
+                            ->required()
+                            ->multiple()
+                            ->appendFiles()
+                            ->openable()
+                            ->uploadingMessage('Uploading attachment...')
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->directory('Surat_Masuk/' . Carbon::now()->format('Y'))
+                            ->getUploadedFileNameForStorageUsing(function (Get $get, TemporaryUploadedFile $file) {
+                                $uniqueId = str_pad(random_int(1000, 99999), 5, '0', STR_PAD_LEFT); // Generate a unique 4 or 5 digit ID
+                                $nomorAgenda = str_replace([' ', '/'], '_', $get('nomor_agenda'));
+                                return Carbon::now()->format('d_m_Y').'_'.$uniqueId.'_'.$nomorAgenda . '.' . $file->getClientOriginalExtension();
+                            }),
+                        PdfViewerField::make('lampiran_surat_masuk')
+                            ->label(__('form.preview_attachments')),
+                    ])
                     ->columns(2)
                     ->collapsible(),
             ])

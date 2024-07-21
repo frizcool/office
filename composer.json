@@ -25,7 +25,6 @@
         "tomatophp/filament-settings-hub": "^1.0",
         "tomatophp/filament-translations": "^1.0",
         "tomatophp/filament-users": "^1.0",
-        "tomatophp/tomato-notifications": "^1.1",
         "z3d0x/filament-logger": "^0.7.2"
     },
     "require-dev": {

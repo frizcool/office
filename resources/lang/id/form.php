@@ -8,6 +8,7 @@ return [
     'received_from' => 'Terima Dari',
     'letter_number' => 'Nomor Surat',
     'letter_date' => 'Tanggal Surat',
+    'generate_automatic'=> 'Otomatis',
     'classification' => 'Klasifikasi Surat',
     'status' => 'Status Surat',
     'nature' => 'Sifat Surat',
