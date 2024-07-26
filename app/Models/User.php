@@ -15,7 +15,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable,HasRoles,TwoFactorAuthenticatable;
     
-    // use HasPanelShield;
+    use HasPanelShield;
 
     /**
      * The attributes that are mass assignable.

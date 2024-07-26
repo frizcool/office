@@ -17,7 +17,7 @@ class KopstuksSeeder extends Seeder
         $data = [
             [
                 'id' => 1, 
-                'ur_kopstuk' => 'KOMANDO DAERAH MILITER III/SILIWANGI\nINFORMASI DAN PENGOLAHAN DATA', 
+                'ur_kopstuk' => 'KOMANDO DAERAH MILITER III/SILIWANGI INFORMASI DAN PENGOLAHAN DATA', 
                 'kd_ktm' => '03', 
                 'kd_smk' => '4T0B', 
                 'created_at' => '2024-07-14 00:38:53', 

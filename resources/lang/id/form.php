@@ -1,5 +1,9 @@
 <?php
 return [
+    'rack'=>'Rak',
+    'cabinet'=>'Lemari',
+    'locker'=>'Loker',
+    'additional_information'=>'Lokasi Fisik',
     'general_information' => 'Informasi Umum',
     'no_agenda' => 'Nomor Agenda',
     'agenda_date' => 'Tanggal Agenda',

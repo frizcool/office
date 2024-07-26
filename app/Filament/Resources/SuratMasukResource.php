@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SuratMasukResource\Pages;
@@ -21,7 +22,11 @@ use App\Models\Satminkal;
 use App\Models\Status;
 use App\Models\Sifat;
 use App\Models\KlasifikasiSurat;
+use App\Models\Rak;
+use App\Models\Lemari;
+use App\Models\Loker;
 use Illuminate\Support\Str;
+
 class SuratMasukResource extends Resource
 {
     protected static ?string $model = SuratMasuk::class;
@@ -97,6 +102,7 @@ class SuratMasukResource extends Resource
     public static function form(Form $form): Form
     {
         $isEdit = request()->routeIs('filament.admin.resources.surat-masuks.edit');
+        $isTU = auth()->user()->hasRole('TU');
 
         return $form
             ->schema([
@@ -108,7 +114,6 @@ class SuratMasukResource extends Resource
                             ->helperText(__('form.generate_automatic'))
                             ->default(fn() => self::generateNomorAgenda())
                             ->prefixIcon('heroicon-m-inbox-stack')
-
                             ->prefixIconColor('success'),
                         Forms\Components\DatePicker::make('tanggal_agenda')
                             ->label(__('form.agenda_date'))
@@ -176,7 +181,7 @@ class SuratMasukResource extends Resource
                     ])
                     ->columns(3)
                     ->collapsible(),
-    
+
                 Section::make(__('form.attachments'))
                     ->schema([
                         Forms\Components\FileUpload::make('lampiran_surat_masuk')
@@ -198,6 +203,34 @@ class SuratMasukResource extends Resource
                     ])
                     ->columns(2)
                     ->collapsible(),
+
+                Section::make(__('form.additional_information'))
+                    ->schema([
+                        Forms\Components\Select::make('rak_id')
+                            ->label(__('form.rack'))
+                            ->options(Rak::all()->pluck('nama_rak', 'id'))
+                            // ->required()
+                            ->searchable()
+                            ->prefixIcon('heroicon-o-archive-box')
+                            ->prefixIconColor('success'),
+                        Forms\Components\Select::make('lemari_id')
+                            ->label(__('form.cabinet'))
+                            ->options(Lemari::all()->pluck('nama_lemari', 'id'))
+                            // ->required()
+                            ->searchable()
+                            ->prefixIcon('heroicon-o-briefcase')
+                            ->prefixIconColor('success'),
+                            Forms\Components\Select::make('loker_id')
+                            ->label(__('form.locker'))
+                            ->options(Loker::all()->pluck('nama_loker', 'id'))
+                            // ->required()
+                            ->searchable()
+                            ->prefixIcon('heroicon-o-lock-closed')
+                            ->prefixIconColor('success'),
+                    ])
+                    ->columns(3)
+                    ->collapsed($isEdit)
+                    ->hidden(fn() => !auth()->user()->hasRole('TU')),
             ])
             ->columns(3);
     }
@@ -211,6 +244,7 @@ class SuratMasukResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('form.status'))
                     ->badge()
+                    ->color('danger')
                     ->getStateUsing(function (SuratMasuk $record) {
                         $lastDisposisi = $record->disposisis()->latest()->first();
                         return $lastDisposisi && $lastDisposisi->user ? "Disposisi oleh " . $lastDisposisi->user->jabatan : "Menunggu disposisi";
@@ -277,3 +311,4 @@ class SuratMasukResource extends Resource
         ];
     }
 }
+

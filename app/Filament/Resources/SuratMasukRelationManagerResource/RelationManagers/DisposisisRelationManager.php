@@ -129,70 +129,77 @@ class DisposisisRelationManager extends RelationManager
     }
 
     public function table(Table $table): Table
-    {
-        return $table
-            ->recordTitleAttribute('nomor_agenda')
-            ->columns([
-                Tables\Columns\TextColumn::make('user.jabatan')
-                    ->label('Disposisi Dari'),
-                Tables\Columns\TextColumn::make('penerimaDisposisi')
-                    ->label('Penerima Disposisi')
-                    ->badge(),
-                Tables\Columns\TextColumn::make('isi')
-                    ->label('Isi Disposisi')->wrap()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('tanggal_disposisi')
-                    ->label('Tanggal Disposisi')
-                    ->sortable()
-                    ->searchable()
-                    ->date(),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->after(
-                        function ($record, $data) {
-                            foreach ($data['disposisi_kepada'] as $kepada) {
-                                Notification::make()
-                                    ->title(__('notifications.new_disposisi'))
-                                    ->icon('heroicon-o-document-check')
-                                    ->body(
-                                        "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratMasuk->nomor_agenda} <br>".
-                                        "<b>" . __('notifications.subject') . ":</b> {$record->suratMasuk->perihal} <br>"
-                                    )
-                                    ->actions([
-                                        Action::make(__('notifications.view'))
-                                            ->url(SuratMasukResource::getUrl('edit', ['record' => $record->surat_masuk_id]))->markAsRead(),
-                                    ])
-                                    ->success()
-                                    ->sendToDatabase(User::find($kepada));
+        {
+            $currentUser = Auth::user();
+
+            return $table
+                ->recordTitleAttribute('nomor_agenda')
+                ->columns([
+                    Tables\Columns\TextColumn::make('user.jabatan')
+                        ->label('Disposisi Dari'),
+                    Tables\Columns\TextColumn::make('penerimaDisposisi')
+                        ->label('Penerima Disposisi')
+                        ->badge(),
+                    Tables\Columns\TextColumn::make('isi')
+                        ->label('Isi Disposisi')->wrap()
+                        ->searchable(),
+                    Tables\Columns\TextColumn::make('tanggal_disposisi')
+                        ->label('Tanggal Disposisi')
+                        ->sortable()
+                        ->searchable()
+                        ->date(),
+                ])
+                ->filters([
+                    //
+                ])
+                ->headerActions([
+                    Tables\Actions\CreateAction::make()
+                        ->visible(fn() => $currentUser->hasRole(['super_admin', 'eselon_pimpinan', 'eselon_pembantu_pimpinan']))    
+                        ->after(
+                            function ($record, $data) {
+                                foreach ($data['disposisi_kepada'] as $kepada) {
+                                    Notification::make()
+                                        ->title(__('notifications.new_disposisi'))
+                                        ->icon('heroicon-o-document-check')
+                                        ->body(
+                                            "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratMasuk->nomor_agenda} <br>".
+                                            "<b>" . __('notifications.subject') . ":</b> {$record->suratMasuk->perihal} <br>"
+                                        )
+                                        ->actions([
+                                            Action::make(__('notifications.view'))
+                                                ->url(SuratMasukResource::getUrl('edit', ['record' => $record->surat_masuk_id]))->markAsRead(),
+                                        ])
+                                        ->success()
+                                        ->sendToDatabase(User::find($kepada));
+                                }
                             }
-                        }
-                    ),
-            ])
-            ->actions([
-                Tables\Actions\Action::make('print')
-                    ->label('')
-                    ->color('primary')
-                    ->icon('heroicon-o-printer')
-                    ->url(function ($record) {
-                        $userRole = $this->getRoleByUserId($record->user_id);
-                        return $userRole === 'eselon_pembantu_pimpinan'
-                            ? route('disposisi.print_v2', $record)
-                            : route('disposisi.print', $record);
-                    }, shouldOpenInNewTab: true),
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ]),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+                        ),
+                ])
+                ->actions([
+                    Tables\Actions\Action::make('print')
+                        ->label('')
+                        ->color('primary')
+                        ->icon('heroicon-o-printer')
+                        ->url(function ($record) {
+                            $userRole = $this->getRoleByUserId($record->user_id);
+                            return $userRole === 'eselon_pembantu_pimpinan'
+                                ? route('disposisi.print_v2', $record)
+                                : route('disposisi.print', $record);
+                        }, shouldOpenInNewTab: true),
+                    Tables\Actions\ActionGroup::make([
+                        Tables\Actions\ViewAction::make(),
+                        Tables\Actions\EditAction::make()
+                            ->visible(fn($record) => $currentUser->hasRole('super_admin') || $currentUser->id === $record->user_id),
+                        Tables\Actions\DeleteAction::make()
+                            ->visible(fn($record) => $currentUser->hasRole('super_admin') || $currentUser->id === $record->user_id),
+                    ])->visible(fn($record) => !$currentUser->hasRole('eselon_pelaksana')),
+                ])
+                ->bulkActions([
+                    Tables\Actions\BulkActionGroup::make([
+                        Tables\Actions\DeleteBulkAction::make()
+                            ->visible(fn() => $currentUser->hasRole('super_admin')),
+                    ]),
+                ]);
+        }
+
 }

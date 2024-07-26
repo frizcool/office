@@ -1,5 +1,9 @@
 <?php
 return [
+    'rack'=>'Rack',
+    'cabinet'=>'Cabinet',
+    'locker'=>'Locker',
+    'additional_information'=>'Physical Location',
     'general_information' => 'General Information',
     'no_agenda' => 'Agenda Number',
     'agenda_date' => 'Agenda Date',

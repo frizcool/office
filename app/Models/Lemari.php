@@ -10,6 +10,6 @@ class Lemari extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $keyType = 'string';
+    protected $guarded= [];
     public $incrementing = false;
 }

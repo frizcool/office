@@ -24,10 +24,10 @@ return [
         'intercept_gate' => 'before', // after
     ],
 
-    'panel_user' => [
-        'enabled' => true,
-        'name' => 'panel_user',
-    ],
+    // 'panel_user' => [
+    //     'enabled' => true,
+    //     'name' => 'panel_user',
+    // ],
 
     'permission_prefixes' => [
         'resource' => [
@@ -77,13 +77,13 @@ return [
     ],
 
     'discovery' => [
-        'discover_all_resources' => false,
-        'discover_all_widgets' => false,
-        'discover_all_pages' => false,
+        'discover_all_resources' => true,
+        'discover_all_widgets' => true,
+        'discover_all_pages' => true,
     ],
 
     'register_role_policy' => [
-        'enabled' => false,
+        'enabled' => true,
     ],
 
 ];
