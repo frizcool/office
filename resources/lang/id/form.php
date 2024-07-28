@@ -18,6 +18,8 @@ return [
     'nature' => 'Sifat Surat',
     'subject' => 'Perihal',
     'attachments' => 'Lampiran',
+    'to' => 'Kepada',
+    'outgoing_attachments' => 'Lampiran Surat Keluar',
     'incoming_attachments' => 'Lampiran Surat Masuk',
     'preview_attachments' => 'Preview Lampiran',
     'record_title' => 'Surat Masuk', // Add this line

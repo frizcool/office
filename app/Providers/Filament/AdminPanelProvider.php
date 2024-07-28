@@ -90,6 +90,8 @@ class AdminPanelProvider extends PanelProvider
                     )
                     // ->showAttribution(false)
                     ,
+                    
+                    \Hugomyb\FilamentErrorMailer\FilamentErrorMailerPlugin::make(),
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 BreezyCore::make()->myProfile(
                     shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)

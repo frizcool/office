@@ -30,7 +30,7 @@ use Illuminate\Support\Str;
 class SuratMasukResource extends Resource
 {
     protected static ?string $model = SuratMasuk::class;
-    protected static ?string $navigationIcon = 'heroicon-o-inbox-arrow-down';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-down-tray';
     protected static ?int $navigationSort = 2;
 
     public static function getNavigationLabel(): string
@@ -96,7 +96,7 @@ class SuratMasukResource extends Resource
         } else {
             $lastNumber = 1;
         }
-        return 'AGD/' . $lastNumber . '/' . $romanMonth . '/' . $currentYear;
+        return 'AGDM/' . $lastNumber . '/' . $romanMonth . '/' . $currentYear;
     }
 
     public static function form(Form $form): Form

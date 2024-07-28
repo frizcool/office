@@ -12,16 +12,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('surat_keluars', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('nomor_agenda');
-            $table->date('tanggal_masuk');
+            $table->date('tanggal_agenda');
+            $table->string('nomor_surat');
+            $table->date('tanggal_surat');
             $table->string('kepada');
             $table->string('perihal');
-            $table->foreignId('klasifikasi_id')->constrained('klasifikasi_surats')->onDelete('cascade');
-            $table->string('lokasi_fisik');
-            $table->string('lampiran_surat_masuk');
+            $table->string('kd_ktm');
+            $table->string('kd_smk');
             $table->string('status');
+            $table->Integer('klasifikasi_id')->constrained('klasifikasi_surats')->onDelete('cascade');
+            $table->string('lokasi_fisik')->nullable();
+            $table->string('lampiran_surat_keluar');
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
+
+            $table->foreign('created_by')->references('id')->on('users');
         });
     }
 

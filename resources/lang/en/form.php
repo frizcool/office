@@ -18,6 +18,8 @@ return [
     'nature' => 'Letter Nature',
     'subject' => 'Subject',
     'attachments' => 'Attachments',
+    'to' => 'To',
+    'outgoing_attachments' => 'Outgoing Letter Attachments',
     'incoming_attachments' => 'Incoming Letter Attachments',
     'preview_attachments' => 'Preview Attachments',
     'record_title' => 'Incoming Letter', // Add this line

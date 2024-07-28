@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "42ac4bfdc124b3e8a5f82e51cfb850ab",
+    "content-hash": "3d13802fa1de1abad65151caa3be9224",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -71,6 +71,66 @@
                 "source": "https://github.com/AnourValar/eloquent-serialize/tree/1.2.22"
             },
             "time": "2024-03-22T12:56:46+00:00"
+        },
+        {
+            "name": "aymanalhattami/filament-slim-scrollbar",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aymanalhattami/filament-slim-scrollbar.git",
+                "reference": "0d7b004bc1c5775cd03fa1119579a24aeab6e9c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aymanalhattami/filament-slim-scrollbar/zipball/0d7b004bc1c5775cd03fa1119579a24aeab6e9c5",
+                "reference": "0d7b004bc1c5775cd03fa1119579a24aeab6e9c5",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "spatie/laravel-package-tools": "^1.15"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Aymanalhattami\\FilamentSlimScrollbar\\FilamentSlimScrollbarServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentSlimScrollbar": "Aymanalhattami\\FilamentSlimScrollbar\\FilamentSlimScrollbarFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Aymanalhattami\\FilamentSlimScrollbar\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ayman Alhattami",
+                    "email": "ayman.m.alhattami@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Slim scrollbar for sidebar scrollbar, table scrollbar, and any other scrollbar in the application.",
+            "homepage": "https://github.com/aymanalhattami/filament-slim-scrollbar",
+            "keywords": [
+                "aymanalhattami",
+                "css slim scrollbar",
+                "filament",
+                "filament-slim-scrollbar",
+                "pure css scrollbar"
+            ],
+            "support": {
+                "issues": "https://github.com/aymanalhattami/filament-slim-scrollbar/issues",
+                "source": "https://github.com/aymanalhattami/filament-slim-scrollbar/tree/2.0.0"
+            },
+            "time": "2023-08-08T09:31:59+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -2302,6 +2362,79 @@
             "time": "2023-12-03T19:50:20+00:00"
         },
         {
+            "name": "hugomyb/filament-error-mailer",
+            "version": "v3.1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hugomayo7/filament-error-mailer.git",
+                "reference": "4ac13b0c3153d26fded5f8f5d277b2eab3a6f7c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hugomayo7/filament-error-mailer/zipball/4ac13b0c3153d26fded5f8f5d277b2eab3a6f7c1",
+                "reference": "4ac13b0c3153d26fded5f8f5d277b2eab3a6f7c1",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^7.9",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.1",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Hugomyb\\FilamentErrorMailer\\FilamentErrorMailerServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentErrorMailer": "Hugomyb\\FilamentErrorMailer\\Facades\\FilamentErrorMailer"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hugomyb\\FilamentErrorMailer\\": "src/",
+                    "Hugomyb\\FilamentErrorMailer\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mayonobe Hugo",
+                    "email": "hugomayonobe@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Filament plugin for instant e-mail alerts on web errors, simplifying monitoring and application stability.",
+            "homepage": "https://github.com/hugomyb/filament-error-mailer",
+            "keywords": [
+                "filament-error-mailer",
+                "hugomyb",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/hugomyb/filament-error-mailer/issues",
+                "source": "https://github.com/hugomyb/filament-error-mailer"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/hugomyb",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-03-25T11:18:04+00:00"
+        },
+        {
             "name": "jeffgreco13/filament-breezy",
             "version": "v2.4.2",
             "source": {
@@ -3843,6 +3976,73 @@
                 }
             ],
             "time": "2023-06-21T14:59:35+00:00"
+        },
+        {
+            "name": "malzariey/filament-daterangepicker-filter",
+            "version": "2.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/malzariey/filament-daterangepicker-filter.git",
+                "reference": "8a6950002fe906682a09a4137cf04d3c2a89525a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/malzariey/filament-daterangepicker-filter/zipball/8a6950002fe906682a09a4137cf04d3c2a89525a",
+                "reference": "8a6950002fe906682a09a4137cf04d3c2a89525a",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.0|^3.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0|^11.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.16.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Malzariey\\FilamentDaterangepickerFilter\\FilamentDaterangepickerFilterServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentDaterangepickerFilter": "Malzariey\\FilamentDaterangepickerFilter\\Facades\\FilamentDaterangepickerFilter"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Malzariey\\FilamentDaterangepickerFilter\\": "src",
+                    "Malzariey\\FilamentDaterangepickerFilter\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Majid Al-Zariey",
+                    "email": "malzariey@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "This package uses daterangepciker library to filter date by a range or predefined date ranges (Today , Yesterday ...etc)",
+            "homepage": "https://github.com/malzariey/filament-daterangepicker-filter",
+            "keywords": [
+                "Malzariey",
+                "filament-daterangepicker-filter",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/malzariey/filament-daterangepicker-filter/issues",
+                "source": "https://github.com/malzariey/filament-daterangepicker-filter/tree/2.8.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Malzariey",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-07-01T22:18:22+00:00"
         },
         {
             "name": "markbaker/complex",
