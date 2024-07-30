@@ -26,7 +26,9 @@ use App\Models\Rak;
 use App\Models\Lemari;
 use App\Models\Loker;
 use Illuminate\Support\Str;
-
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
+use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 class SuratMasukResource extends Resource
 {
     protected static ?string $model = SuratMasuk::class;
@@ -240,7 +242,10 @@ class SuratMasukResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nomor_agenda')
-                    ->label(__('form.no_agenda'))->searchable(),
+                    ->label(__('form.no_agenda'))->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('nomor_surat')
+                    ->label(__('form.letter_number'))->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('form.status'))
                     ->badge()
@@ -276,10 +281,22 @@ class SuratMasukResource extends Resource
                     ->searchable()
                     ->sortable(),
             ])
+           
             ->filters([
                 SelectFilter::make('klasifikasi_id')->label(__('form.classification'))
-                    ->options(fn (): array => KlasifikasiSurat::query()->pluck('ur_klasifikasi', 'id')->all())
-            ])
+                    ->options(fn (): array => KlasifikasiSurat::query()->pluck('ur_klasifikasi', 'id')->all()),
+                // SelectFilter::make('status')
+                //     ->multiple()
+                //     ->options([
+                //         'Draft' => 'Draft',
+                //         'Reviewed' => 'Reviewed',
+                //         'Approved' => 'Approved',
+                //         'Archived' => 'Archived',
+                //     ]),
+                DateRangeFilter::make('tanggal_surat')->label(__('form.letter_date'))
+                    ->disableRanges(),
+                
+            ], layout: FiltersLayout::AboveContent)
             ->actions([ 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([               
