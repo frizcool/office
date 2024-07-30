@@ -19,7 +19,7 @@ class DisposisisRelationManager extends RelationManager
 {
     protected static string $relationship = 'disposisis';
 
-    protected static ?string $recordTitleAttribute = 'id';
+    protected static ?string $recordTitleAttribute = 'nomor_agenda';
 
     protected function getUsersByRole()
     {
@@ -62,7 +62,7 @@ class DisposisisRelationManager extends RelationManager
                 ->schema([
                     Section::make('Tujuan Disposisi')
                         ->schema([
-                            Forms\Components\CheckboxList::make('disposisi_kepada')
+                        Forms\Components\CheckboxList::make('disposisi_kepada')
                                 ->label('Disposisi Kepada')
                                 ->options($this->getUsersByRole())
                                 ->required()

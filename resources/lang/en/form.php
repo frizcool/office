@@ -19,6 +19,7 @@ return [
     'subject' => 'Subject',
     'attachments' => 'Attachments',
     'to' => 'To',
+    'from' => 'From',
     'outgoing_attachments' => 'Outgoing Letter Attachments',
     'incoming_attachments' => 'Incoming Letter Attachments',
     'preview_attachments' => 'Preview Attachments',

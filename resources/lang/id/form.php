@@ -19,6 +19,7 @@ return [
     'subject' => 'Perihal',
     'attachments' => 'Lampiran',
     'to' => 'Kepada',
+    'from' => 'Dari',
     'outgoing_attachments' => 'Lampiran Surat Keluar',
     'incoming_attachments' => 'Lampiran Surat Masuk',
     'preview_attachments' => 'Preview Lampiran',
