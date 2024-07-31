@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('surat_keluar_id');
             $table->string('status'); // draft, in_review, approved
             $table->text('keterangan')->nullable();
+            $table->text('paraf')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->string('user_id')->nullable();
             $table->timestamps();            

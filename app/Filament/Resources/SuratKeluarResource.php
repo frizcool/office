@@ -200,12 +200,14 @@ class SuratKeluarResource extends Resource
                 Tables\Columns\TextColumn::make('latestDisposisiStatus')
                     ->label(__('form.status'))
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Draf' => 'primary',
-                        'Tinjau Kembali' => 'danger',
-                        'Perbaikan' => 'info',
-                        'Disetuji' => 'success',
-                        default => 'info ',
+                    ->color(function (string $state): string {
+                        return match ($state) {
+                            'Konsep' => 'primary',
+                            'Tinjau Kembali' => 'danger',
+                            'Perbaikan' => 'info',
+                            'Disetujui' => 'success',
+                            default => 'danger',
+                        };
                     }),
                 // Menampilkan nama pengesah dari disposisi terakhir
                 Tables\Columns\TextColumn::make('latestDisposisiApproverName')

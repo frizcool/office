@@ -8,7 +8,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
@@ -18,76 +17,89 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use App\Filament\Resources\SuratKeluarResource;
+
 class DisposisiSuratKeluarsRelationManager extends RelationManager
 {
     protected static string $relationship = 'disposisi_surat_keluars';
-
     protected static ?string $recordTitleAttribute = 'nomor_agenda';
 
-    protected function getUsersByRole()
+    protected function getUsersByRole($status)
     {
         $currentUser = Auth::user();
         $currentUserId = $currentUser->id;
 
-        if ($currentUser->hasRole('super_admin')) {
-            return User::where('id', '!=', $currentUserId)->pluck('jabatan', 'id');
-        }
-
-        // $roleHierarchy = [
-        //     'eselon_pimpinan' => ['eselon_pimpinan', 'eselon_pembantu_pimpinan', 'eselon_pelaksana'],
-        //     'eselon_pembantu_pimpinan' => ['eselon_pembantu_pimpinan', 'eselon_pelaksana'],
-        // ];
         $roleHierarchy = [
             'eselon_pelaksana' => ['eselon_pembantu_pimpinan'],
-            'eselon_pembantu_pimpinan' => ['eselon_pimpinan', 'eselon_pelaksana'],
-            'eselon_pimpinan' => ['eselon_pembantu_pimpinan'],
+            'eselon_pembantu_pimpinan' => ['eselon_pimpinan'],
+            'eselon_pimpinan' => ['TU'],
         ];
 
         $currentUserRole = $currentUser->getRoleNames()->first();
-        $higherLevelRoles = $roleHierarchy[$currentUserRole] ?? [];
+        $targetRoles = [];
 
-        if (!empty($higherLevelRoles)) {
-            return User::role($higherLevelRoles)
+        if ($status == 'Tinjau Kembali') {
+            // Mendapatkan role satu tingkat di bawah
+            foreach ($roleHierarchy as $role => $higherRoles) {
+                if (in_array($currentUserRole, $higherRoles)) {
+                    $targetRoles[] = $role;
+                }
+            }
+        } else {
+            // Mendapatkan role satu tingkat di atas
+            $targetRoles = $roleHierarchy[$currentUserRole] ?? [];
+        }
+
+        if (!empty($targetRoles)) {
+            return User::role($targetRoles)
                 ->where('id', '!=', $currentUserId)
                 ->pluck('jabatan', 'id');
         }
 
         return collect([]);
     }
-    protected function getRoleByUserId($userId)
-    {
-        $user = User::find($userId);
-        return $user ? $user->getRoleNames()->first() : null;
-    }
+
     public function form(Form $form): Form
     {
+        $statuses = [
+            'Konsep' => 'Konsep',
+            'Perbaikan' => 'Perbaikan',
+            'Tinjau Kembali' => 'Tinjau Kembali',
+            'Disetujui' => 'Disetujui',
+        ];
+
         return $form
-            ->schema([             
-                Section::make('Tujuan Disposisi')
-                        ->schema([
-                        Forms\Components\Radio::make('user_id')
-                                ->label('Diajukan Kepada')
-                                ->options($this->getUsersByRole())
-                                ->required()
-                                ->columns(4),
-                        ]),   
-                        
-                Section::make('Tujuan Disposisi')
-                ->schema([
-                Forms\Components\Hidden::make('created_by')->default(auth()->id()),
-                // Forms\Components\Select::make('user_id')
-                //     ->relationship('user', 'name')
-                //     ->required(),
-                Forms\Components\Textarea::make('keterangan')
-                ->label(__('form.subject')),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'Draf' => 'Draf',
-                        'Perbaikan' => 'Perbaikan',
-                        'Tinjau Kembali' => 'Tinjau Kembali',
-                        'Disetuji' => 'Disetuji',
+            ->schema([
+                Section::make('Isi Disposisi')
+                    ->schema([
+                        Forms\Components\Select::make('status')
+                            ->options($statuses)
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                $set('user_id', null);
+                            }),
+
+                        Forms\Components\Hidden::make('created_by')->default(auth()->id()),
+                        Forms\Components\Textarea::make('keterangan')
+                            ->label(__('form.subject')),
                     ])
-                    ->required(),
+                    ->columns(2),
+                Section::make('Tujuan Disposisi')
+                    ->schema([
+                        Forms\Components\Radio::make('user_id')
+                            ->label('Diajukan Kepada')
+                            ->options(function (callable $get) {
+                                $status = $get('status');
+                                return $this->getUsersByRole($status);
+                            })
+                            ->required()
+                            ->columns(2),
+                        SignaturePad::make('paraf')
+                            ->label(__('Paraf disini'))
+                            ->exportPenColor('#000')
+                            ->penColor('#000')
+                            ->penColorOnDark('#fff')
+                            ->exportPenColor('#00f'),
                     ])
                     ->columns(2)
             ]);
@@ -103,10 +115,10 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'Draf' => 'primary',
+                        'Konsep' => 'primary',
                         'Tinjau Kembali' => 'danger',
                         'Perbaikan' => 'info',
-                        'Disetuji' => 'success',
+                        'Disetujui' => 'success',
                         default => 'info ',
                     }),
                 Tables\Columns\TextColumn::make('suratKeluar.nomor_agenda')
@@ -123,8 +135,8 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                     ->label(__('form.subject')),
             ])
             ->filters([
-                Filter::make('Draf')
-                    ->query(fn (Builder $query): Builder => $query->where('status', 'Draf')),
+                Filter::make('Konsep')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'Konsep')),
                 Filter::make('Perbaikan')
                     ->query(fn (Builder $query): Builder => $query->where('status', 'Perbaikan')),
                 Filter::make('Tinjau Kembali')
@@ -134,7 +146,6 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    // ->visible(fn () => $currentUser->hasRole(['super_admin', 'eselon_pimpinan', 'eselon_pembantu_pimpinan']))
                     ->after(
                         function ($record, $data) {
                             Notification::make()
@@ -154,46 +165,43 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                         }
                     ),
             ])
-            ->actions([                
-            Tables\Actions\ActionGroup::make([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
-                    ->visible(fn ($record) => $record->created_by === $currentUser->id)
-                    ->after(
-                        function ($record, $data) {
-                            Notification::make()
-                                ->title(__('notifications.new_disposisi'))
-                                ->icon('heroicon-o-document-check')
-                                ->body(
-                                    "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratKeluar->nomor_agenda} <br>" .
-                                    "<b>" . __('notifications.subject') . ":</b> {$record->suratKeluar->perihal} <br>" .
-                                    "<b>" . __('global.label_disposisi_surat_keluar') . ":</b> {$data['keterangan']} <br>"
-                                )
-                                ->actions([
-                                    Action::make(__('notifications.view'))
-                                        ->url(SuratKeluarResource::getUrl('edit', ['record' => $record->surat_keluar_id]))->markAsRead(),
-                                ])
-                                ->success()
-                                ->sendToDatabase(User::find($data['user_id']));
-                        }
-                    ),
-                Tables\Actions\DeleteAction::make()
-                    ->visible(fn ($record) => $record->created_by === $currentUser->id),
+            ->actions([
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make()->color('info'),
+                    Tables\Actions\EditAction::make()->color('info')
+                        ->visible(fn ($record) => $record->created_by === $currentUser->id || $currentUser->hasRole('super_admin'))
+                        ->after(
+                            function ($record, $data) {
+                                Notification::make()
+                                    ->title(__('notifications.new_disposisi'))
+                                    ->icon('heroicon-o-document-check')
+                                    ->body(
+                                        "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratKeluar->nomor_agenda} <br>" .
+                                        "<b>" . __('notifications.subject') . ":</b> {$record->suratKeluar->perihal} <br>" .
+                                        "<b>" . __('global.label_disposisi_surat_keluar') . ":</b> {$data['keterangan']} <br>"
+                                    )
+                                    ->actions([
+                                        Action::make(__('notifications.view'))
+                                            ->url(SuratKeluarResource::getUrl('edit', ['record' => $record->surat_keluar_id]))->markAsRead(),
+                                    ])
+                                    ->success()
+                                    ->sendToDatabase(User::find($data['user_id']));
+                            }
+                        ),
+                    Tables\Actions\DeleteAction::make()
+                        ->visible(fn ($record) => $record->created_by === $currentUser->id || $currentUser->hasRole('super_admin')),
                 ]),
             ])
-            ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
-            ]);
+            ->bulkActions([]);
     }
 
     public function afterCreate()
     {
-        $this->record->update(['status' => 'Reviewed']);
+        // $this->record->update(['status' => 'Reviewed']);
     }
+
     public function afterDelete()
     {
-        $this->record->update(['status' => 'Draft']);
+        // $this->record->update(['status' => 'Konsept']);
     }
 }

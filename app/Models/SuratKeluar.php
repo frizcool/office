@@ -32,14 +32,14 @@ class SuratKeluar extends Model
     public function getLatestDisposisiStatusAttribute()
     {
         $latestDisposisi = $this->latestDisposisi();
-        return $latestDisposisi ? $latestDisposisi->status : 'Unknown';
+        return $latestDisposisi ? $latestDisposisi->status : 'Belum Disposisi';
     }
 
     // Mendapatkan nama pengesah disposisi terbaru
     public function getLatestDisposisiApproverNameAttribute()
     {
         $latestDisposisi = $this->latestDisposisi();
-        return $latestDisposisi && $latestDisposisi->user ? $latestDisposisi->user->name : 'Unknown';
+        return $latestDisposisi && $latestDisposisi->user ? $latestDisposisi->user->name : '-';
     }
 
     public function user()
