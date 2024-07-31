@@ -1,5 +1,6 @@
 <?php
 return [
+    'approver'=>'Approver',
     'rack'=>'Rack',
     'cabinet'=>'Cabinet',
     'locker'=>'Locker',

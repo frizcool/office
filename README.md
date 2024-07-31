@@ -62,7 +62,7 @@ Setelah instalasi, Anda dapat mengakses aplikasi dengan menavigasi ke `http://lo
 
 ### Panel Admin
 
-Panel admin dibangun menggunakan Filament PHP, menyediakan antarmuka intuitif untuk mengelola pengguna, peran, izin, dan catatan surat. Anda dapat mengakses panel admin di `http://localhost:8000/admin`.
+Panel admin dibangun menggunakan Filament PHP, menyediakan antarmuka intuitif untuk mengelola pengguna, peran, izin, dan catatan surat. Anda dapat mengakses panel admin di `http://localhost:8000`.
 
 ## Kontribusi
 

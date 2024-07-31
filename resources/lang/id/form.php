@@ -1,5 +1,6 @@
 <?php
-return [
+return [    
+    'approver'=>'Penanggung Jawab',
     'rack'=>'Rak',
     'cabinet'=>'Lemari',
     'locker'=>'Loker',

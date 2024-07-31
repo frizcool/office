@@ -51,8 +51,12 @@ class SuratKeluarResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        // return parent::getEloquentQuery()
+        //     ->where('created_by', auth()->id());
+
         return parent::getEloquentQuery()
-            ->where('created_by', auth()->id());
+            ->where('kd_ktm', auth()->user()->kd_ktm)
+            ->where('kd_smk', auth()->user()->kd_smk);
     }
 
     public static function getGloballySearchableAttributes(): array
@@ -186,13 +190,28 @@ class SuratKeluarResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nomor_agenda')
-                    ->label(__('form.no_agenda'))->searchable()
+                    ->label(__('form.no_agenda'))
+                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('nomor_surat')
-                    ->label(__('form.letter_number'))->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                    ->label(__('form.letter_number'))
+                    ->searchable(),
+                // Menampilkan status dari disposisi terakhir
+                Tables\Columns\TextColumn::make('latestDisposisiStatus')
                     ->label(__('form.status'))
-                    ->badge(),
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Draf' => 'primary',
+                        'Tinjau Kembali' => 'danger',
+                        'Perbaikan' => 'info',
+                        'Disetuji' => 'success',
+                        default => 'info ',
+                    }),
+                // Menampilkan nama pengesah dari disposisi terakhir
+                Tables\Columns\TextColumn::make('latestDisposisiApproverName')
+                    ->label(__('form.approver'))
+                    ->searchable()
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('tanggal_agenda')
                     ->label(__('form.agenda_date'))
                     ->date()
@@ -204,19 +223,22 @@ class SuratKeluarResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('kepada')
                     ->label(__('form.to'))
-                    ->searchable()->wrap(),
+                    ->searchable()
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('perihal')
                     ->label(__('form.subject'))
                     ->searchable()
-                    ->limit(50)->wrap(),
+                    ->limit(50)
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('klasifikasiSurat.ur_klasifikasi')
                     ->label(__('form.classification'))
-                    ->searchable()                    
+                    ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('klasifikasi_id')->label(__('form.classification'))
+                SelectFilter::make('klasifikasi_id')
+                    ->label(__('form.classification'))
                     ->options(fn (): array => KlasifikasiSurat::query()->pluck('ur_klasifikasi', 'id')->all()),
                 SelectFilter::make('status')
                     ->multiple()
@@ -226,13 +248,13 @@ class SuratKeluarResource extends Resource
                         'Approved' => 'Approved',
                         'Archived' => 'Archived',
                     ]),
-                DateRangeFilter::make('tanggal_surat')->label(__('form.letter_date'))
+                DateRangeFilter::make('tanggal_surat')
+                    ->label(__('form.letter_date'))
                     ->disableRanges(),
-                
-            ], layout: FiltersLayout::AboveContent)
-            ->actions([ 
+            ], layout: FiltersLayout::AboveContentCollapsible)
+            ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\ActionGroup::make([               
+                Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
@@ -244,6 +266,8 @@ class SuratKeluarResource extends Resource
                 ]),
             ]);
     }
+
+
  
     public static function getRelations(): array
     {

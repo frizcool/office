@@ -82,9 +82,10 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                 ->label(__('form.subject')),
                 Forms\Components\Select::make('status')
                     ->options([
-                        'Draft' => 'Draft',
-                        'Reviewed' => 'Reviewed',
-                        'Approved' => 'Approved',
+                        'Draf' => 'Draf',
+                        'Perbaikan' => 'Perbaikan',
+                        'Tinjau Kembali' => 'Tinjau Kembali',
+                        'Disetuji' => 'Disetuji',
                     ])
                     ->required(),
                     ])
@@ -95,44 +96,54 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         $currentUser = Auth::user();
+
         return $table
             ->recordTitleAttribute('id')
             ->columns([
+                Tables\Columns\TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Draf' => 'primary',
+                        'Tinjau Kembali' => 'danger',
+                        'Perbaikan' => 'info',
+                        'Disetuji' => 'success',
+                        default => 'info ',
+                    }),
                 Tables\Columns\TextColumn::make('suratKeluar.nomor_agenda')
-                ->label(__('form.no_agenda'))
-                ->toggleable(isToggledHiddenByDefault: true),                
+                    ->label(__('form.no_agenda'))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('suratKeluar.nomor_surat')
-                ->label(__('form.letter_number'))
-                ->toggleable(isToggledHiddenByDefault: true),      
-                Tables\Columns\TextColumn::make('user.name') 
-                ->label(__('form.from')),
-                Tables\Columns\TextColumn::make('to.name') 
-                ->label(__('form.to')),
-                Tables\Columns\TextColumn::make('keterangan') 
-                ->label(__('form.subject')),
-                Tables\Columns\TextColumn::make('status'),
+                    ->label(__('form.letter_number'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('form.from')),
+                Tables\Columns\TextColumn::make('to.name')
+                    ->label(__('form.to')),
+                Tables\Columns\TextColumn::make('keterangan')
+                    ->label(__('form.subject')),
             ])
             ->filters([
-                Filter::make('Draft')
-                ->query(fn (Builder $query): Builder => $query->where('status', 'Draft')),
-                Filter::make('Reviewed')
-                    ->query(fn (Builder $query): Builder => $query->where('status', 'Reviewed')),
-                Filter::make('Approved')
-                    ->query(fn (Builder $query): Builder => $query->where('status', 'Approved')),
-       
+                Filter::make('Draf')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'Draf')),
+                Filter::make('Perbaikan')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'Perbaikan')),
+                Filter::make('Tinjau Kembali')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'Tinjau Kembali')),
+                Filter::make('Disetujui')
+                    ->query(fn (Builder $query): Builder => $query->where('status', 'Disetujui')),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                ->visible(fn() => $currentUser->hasRole(['super_admin', 'eselon_pimpinan', 'eselon_pembantu_pimpinan']))    
-                ->after(
-                    function ($record, $data) {
-                        // foreach ($data['user_id'] as $kepada) {
+                    // ->visible(fn () => $currentUser->hasRole(['super_admin', 'eselon_pimpinan', 'eselon_pembantu_pimpinan']))
+                    ->after(
+                        function ($record, $data) {
                             Notification::make()
                                 ->title(__('notifications.new_disposisi'))
                                 ->icon('heroicon-o-document-check')
                                 ->body(
-                                    "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratKeluar->nomor_agenda} <br>".
-                                    "<b>" . __('notifications.subject') . ":</b> {$record->suratKeluar->keterangan} <br>"
+                                    "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratKeluar->nomor_agenda} <br>" .
+                                    "<b>" . __('notifications.subject') . ":</b> {$record->suratKeluar->perihal} <br>" .
+                                    "<b>" . __('global.label_disposisi_surat_keluar') . ":</b> {$data['keterangan']} <br>"
                                 )
                                 ->actions([
                                     Action::make(__('notifications.view'))
@@ -140,20 +151,23 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                                 ])
                                 ->success()
                                 ->sendToDatabase(User::find($data['user_id']));
-                        // }
-                    }
-                ),
+                        }
+                    ),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make() ->after(
-                    function ($record, $data) {
-                        // foreach ($data['user_id'] as $kepada) {
+            ->actions([                
+            Tables\Actions\ActionGroup::make([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => $record->created_by === $currentUser->id)
+                    ->after(
+                        function ($record, $data) {
                             Notification::make()
                                 ->title(__('notifications.new_disposisi'))
                                 ->icon('heroicon-o-document-check')
                                 ->body(
-                                    "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratKeluar->nomor_agenda} <br>".
-                                    "<b>" . __('notifications.subject') . ":</b> {$record->suratKeluar->keterangan} <br>"
+                                    "<b>" . __('notifications.number_agenda') . ":</b> {$record->suratKeluar->nomor_agenda} <br>" .
+                                    "<b>" . __('notifications.subject') . ":</b> {$record->suratKeluar->perihal} <br>" .
+                                    "<b>" . __('global.label_disposisi_surat_keluar') . ":</b> {$data['keterangan']} <br>"
                                 )
                                 ->actions([
                                     Action::make(__('notifications.view'))
@@ -161,17 +175,19 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                                 ])
                                 ->success()
                                 ->sendToDatabase(User::find($data['user_id']));
-                        // }
-                    }
-                ),
-                Tables\Actions\DeleteAction::make(),
+                        }
+                    ),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn ($record) => $record->created_by === $currentUser->id),
+                ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
+
     public function afterCreate()
     {
         $this->record->update(['status' => 'Reviewed']);

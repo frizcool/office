@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class SuratKeluar extends Model
@@ -18,17 +16,38 @@ class SuratKeluar extends Model
     {
         return $this->belongsTo(KlasifikasiSurat::class, 'klasifikasi_id');
     }
+
     public function disposisi_surat_keluars()
     {
         return $this->hasMany(DisposisiSuratKeluar::class);
+    }
+
+    // Mendapatkan disposisi terbaru dari relasi
+    public function latestDisposisi()
+    {
+        return $this->disposisi_surat_keluars()->latest('created_at')->first();
+    }
+
+    // Mendapatkan status disposisi terbaru
+    public function getLatestDisposisiStatusAttribute()
+    {
+        $latestDisposisi = $this->latestDisposisi();
+        return $latestDisposisi ? $latestDisposisi->status : 'Unknown';
+    }
+
+    // Mendapatkan nama pengesah disposisi terbaru
+    public function getLatestDisposisiApproverNameAttribute()
+    {
+        $latestDisposisi = $this->latestDisposisi();
+        return $latestDisposisi && $latestDisposisi->user ? $latestDisposisi->user->name : 'Unknown';
     }
 
     public function user()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
     protected $casts = [
         'lampiran_surat_keluar' => 'array',
     ];
-    
 }
