@@ -17,7 +17,14 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\Section;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Filament\Forms\Get;
+use App\Models\Satminkal;
+use App\Models\Status;
+use App\Models\Sifat;
 use App\Models\KlasifikasiSurat;
+use App\Models\Rak;
+use App\Models\Lemari;
+use App\Models\Loker;
+use Illuminate\Support\Str;
 use Joaopaulolndev\FilamentPdfViewer\Forms\Components\PdfViewerField;
 use App\Models\User;
 use Filament\Tables\Enums\FiltersLayout;
@@ -181,6 +188,33 @@ class SuratKeluarResource extends Resource
                     ])
                     ->columns(2)
                     ->collapsible(),
+                Section::make(__('form.additional_information'))
+                    ->schema([
+                        Forms\Components\Select::make('rak_id')
+                            ->label(__('form.rack'))
+                            ->options(Rak::all()->pluck('nama_rak', 'id'))
+                            // ->required()
+                            ->searchable()
+                            ->prefixIcon('heroicon-o-archive-box')
+                            ->prefixIconColor('success'),
+                        Forms\Components\Select::make('lemari_id')
+                            ->label(__('form.cabinet'))
+                            ->options(Lemari::all()->pluck('nama_lemari', 'id'))
+                            // ->required()
+                            ->searchable()
+                            ->prefixIcon('heroicon-o-briefcase')
+                            ->prefixIconColor('success'),
+                            Forms\Components\Select::make('loker_id')
+                            ->label(__('form.locker'))
+                            ->options(Loker::all()->pluck('nama_loker', 'id'))
+                            // ->required()
+                            ->searchable()
+                            ->prefixIcon('heroicon-o-lock-closed')
+                            ->prefixIconColor('success'),
+                    ])
+                    ->columns(3)
+                    ->collapsed($isEdit)
+                    ->hidden(fn() => !auth()->user()->hasRole('TU')),
             ])
             ->columns(2);
     }
@@ -197,7 +231,7 @@ class SuratKeluarResource extends Resource
                     ->label(__('form.letter_number'))
                     ->searchable(),
                 // Menampilkan status dari disposisi terakhir
-                Tables\Columns\TextColumn::make('latestDisposisiStatus')
+                Tables\Columns\TextColumn::make('status')
                     ->label(__('form.status'))
                     ->badge()
                     ->color(function (string $state): string {
@@ -245,10 +279,10 @@ class SuratKeluarResource extends Resource
                 SelectFilter::make('status')
                     ->multiple()
                     ->options([
-                        'Draft' => 'Draft',
-                        'Reviewed' => 'Reviewed',
-                        'Approved' => 'Approved',
-                        'Archived' => 'Archived',
+                        'Konsep' => 'Konsep',
+                        'Tinjau Kembali' => 'Tinjau Kembali',
+                        'Perbaikan' => 'Perbaikan',
+                        'Disetujui' => 'Disetujui',
                     ]),
                 DateRangeFilter::make('tanggal_surat')
                     ->label(__('form.letter_date'))

@@ -63,6 +63,8 @@
             <div class="col-md-6">
                 <div class="text-center">
                     <p style="margin-bottom:0;">{!! nl2br(e($kopstuk->ur_kopstuk)) !!}</p>
+                    
+                    <!-- <img src="{{ asset('images/checkmark.png') }}" alt="✔" width="20" height="20"> -->
                     <hr>                    
                 </div>
             </div>

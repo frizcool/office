@@ -285,6 +285,10 @@ class SuratMasukResource extends Resource
             ->filters([
                 SelectFilter::make('klasifikasi_id')->label(__('form.classification'))
                     ->options(fn (): array => KlasifikasiSurat::query()->pluck('ur_klasifikasi', 'id')->all()),
+                SelectFilter::make('sifat_id')->label(__('form.nature'))
+                    ->options(fn (): array => Sifat::query()->pluck('ur_sifat', 'id')->all()),
+                SelectFilter::make('status_id')->label(__('form.status'))
+                    ->options(fn (): array => Status::query()->pluck('ur_status', 'id')->all()),
                 // SelectFilter::make('status')
                 //     ->multiple()
                 //     ->options([
@@ -296,7 +300,7 @@ class SuratMasukResource extends Resource
                 DateRangeFilter::make('tanggal_surat')->label(__('form.letter_date'))
                     ->disableRanges(),
                 
-            ], layout: FiltersLayout::AboveContent)
+            ], layout: FiltersLayout::AboveContentCollapsible)
             ->actions([ 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([               

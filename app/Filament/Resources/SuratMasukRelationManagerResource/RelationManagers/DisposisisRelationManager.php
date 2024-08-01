@@ -184,7 +184,7 @@ class DisposisisRelationManager extends RelationManager
                             $userRole = $this->getRoleByUserId($record->user_id);
                             return $userRole === 'eselon_pembantu_pimpinan'
                                 ? route('disposisi.print_v2', $record)
-                                : route('disposisi.print', $record);
+                                : route('disposisi.exportPdf', $record);
                         }, shouldOpenInNewTab: true),
                     Tables\Actions\ActionGroup::make([
                         Tables\Actions\ViewAction::make(),

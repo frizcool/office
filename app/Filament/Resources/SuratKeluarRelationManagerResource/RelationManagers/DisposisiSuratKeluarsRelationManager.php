@@ -148,6 +148,10 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->after(
                         function ($record, $data) {
+                             $suratKeluar = $record->suratKeluar;
+                            if ($suratKeluar) {
+                                $suratKeluar->update(['status' => $data['status']]);
+                            }
                             Notification::make()
                                 ->title(__('notifications.new_disposisi'))
                                 ->icon('heroicon-o-document-check')
@@ -172,6 +176,10 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                         ->visible(fn ($record) => $record->created_by === $currentUser->id || $currentUser->hasRole('super_admin'))
                         ->after(
                             function ($record, $data) {
+                                 $suratKeluar = $record->suratKeluar;
+                            if ($suratKeluar) {
+                                $suratKeluar->update(['status' => $data['status']]);
+                            }
                                 Notification::make()
                                     ->title(__('notifications.new_disposisi'))
                                     ->icon('heroicon-o-document-check')
@@ -195,13 +203,4 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
             ->bulkActions([]);
     }
 
-    public function afterCreate()
-    {
-        // $this->record->update(['status' => 'Reviewed']);
-    }
-
-    public function afterDelete()
-    {
-        // $this->record->update(['status' => 'Konsept']);
-    }
 }

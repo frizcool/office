@@ -5,39 +5,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disposition Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
+            font-size:11;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .fw-bold {
+            font-weight: bold;
+        }
+
+        table {
+            font-size:10;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .no-border td {
+            border: none;
         }
 
         hr.centered-hr {
-            width: 70%;
+            width: 35%;
             margin-left: auto;
             margin-right: auto;
+            border-color: black;
         }
-        hr { 
-            margin-bottom: 0;
-            margin-top: 0;
-            border-color: black !important;
+
+        hr {
+            margin: 0;
+            border: 1px solid black;
+            /* border-color: black !important; */
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        tr, td {
-            padding: 5px;
-            margin: 0px;
-            vertical-align: top;
+
+        p {
+            margin: 0;
+            padding: 0;
         }
 
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 0; /* Set margin to none */
+                margin: 0;
             }
             body {
-                margin: 0; /* Remove margin for the body as well */
+                margin: 0;
             }
         }
     </style>
@@ -48,38 +87,30 @@
         }
     </script>
 </head>
-    @php
-        use Carbon\Carbon;
-        $disposisi_kepada = $disposisi->disposisi_kepada;
-        $disposisi_list_id = $disposisi->disposisi_list_id ;
-        $tanggal_surat = Carbon::parse($disposisi->suratMasuk->tanggal_surat)->format('d-m-Y');
-        $tanggal_agenda = Carbon::parse($disposisi->suratMasuk->tanggal_agenda)->format('d-m-Y');
-        $tanggal_disposisi = Carbon::parse($disposisi->tanggal_disposisi)->format('d-m-Y');
-    @endphp
+
+@php
+    use Carbon\Carbon;
+    $disposisi_kepada = $disposisi->disposisi_kepada;
+    $disposisi_list_id = $disposisi->disposisi_list_id ;
+    $tanggal_surat = Carbon::parse($disposisi->suratMasuk->tanggal_surat)->format('d-m-Y');
+    $tanggal_agenda = Carbon::parse($disposisi->suratMasuk->tanggal_agenda)->format('d-m-Y');
+    $tanggal_disposisi = Carbon::parse($disposisi->tanggal_disposisi)->format('d-m-Y');
+@endphp
+
 <body>
-    <div class="container my-4">  
-        <div class="row">
-            <div class="col-md-6">
-                <div class="text-center">
-                    <p style="margin-bottom:0;">{!! nl2br(e($kopstuk->ur_kopstuk)) !!}</p>
-                    <hr>                    
-                </div>
-            </div>
+    <div class="container">
+        <div class="text-center" style="width:50%;border-bottom: 1px solid black;">
+            <p>{!! nl2br(e($kopstuk->ur_kopstuk)) !!}</p>
         </div>
         <br>
-        <div class="mb-3">
-            <div class="row">
-                <div class="col-3 text-center"></div>
-                <div class="col-6 text-center">
-                <p style="margin-bottom:0;"><strong>LEMBAR DISPOSISI</strong></p>
-                <hr class="centered-hr">   
-                    <p><strong>Nomor Agenda</strong> : {{ $disposisi->suratMasuk->nomor_agenda }}</p>
-                </div>
-                <div class="col-3 text-center"></div>
-            </div>
+
+        <div class="text-center">
+            <p><strong style="border-bottom: 1px solid black; width: 35%;">LEMBAR DISPOSISI</strong></p>
+            <!-- <hr class="centered-hr">    -->
+            <p><strong>Nomor Agenda</strong>: {{ $disposisi->suratMasuk->nomor_agenda }}</p>
         </div>
 
-        <table class="table table-borderless table-sm">
+        <table class="no-border">
             <tbody>
                 <tr>
                     <td><strong>Asal Surat</strong></td>
@@ -91,7 +122,7 @@
                     <td><strong>Nomor Surat</strong></td>
                     <td>: {{ $disposisi->suratMasuk->nomor_surat }}</td>
                     <td><strong>Pukul</strong></td>
-                    <td>: {{ $disposisi->suratMasuk->waktu_agenda }}</td>
+                    <td>: {{ substr($disposisi->suratMasuk->waktu_agenda, 0, 5) }} WIB</td>
                 </tr>
                 <tr>
                     <td><strong>Tanggal Surat</strong></td>
@@ -106,7 +137,7 @@
             </tbody>
         </table>
 
-        <table class="table table-bordered">
+        <table>
             <thead>
                 <tr>
                     <th class="text-uppercase text-center">Diteruskan Kepada</th>
@@ -115,30 +146,26 @@
                 </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>
-                    @php
-                        $no = 0;
-                    @endphp
-                    @foreach($pejabat as $row)
-                        @php
-                            $no++;
-                        @endphp
-                        <p style="margin-left: 1rem;" class="@if (in_array($row->id, $disposisi_kepada)) fw-bold @endif">{{ $no }}. {{ $row->jabatan }} @if (in_array($row->id, $disposisi_kepada)) &#10003; @endif</p>
-                    @endforeach
-                </td>
-                <td>{{ $tanggal_agenda  }}</td>
-                <td>
-                {!! nl2br(e($disposisi->isi )) !!}
-                </td>
-            </tr>              
+                <tr>
+                    <td>
+                        @php $no = 1; @endphp
+                        @foreach($pejabat as $row)
+                            <p style="margin-left: 1rem;" class="@if (in_array($row->id, $disposisi_kepada)) fw-bold @endif">
+                                {{ $no }}. {{ $row->jabatan }} 
+                                @if (in_array($row->id, $disposisi_kepada)) <span style="font-family: DejaVu Sans, sans-serif;">✔</span> @endif
+                            </p>
+                            @php $no++; @endphp
+                        @endforeach
+                    </td>
+                    <td>{{ $tanggal_agenda }}</td>
+                    <td>{!! nl2br(e($disposisi->isi)) !!}</td>
+                </tr>
             </tbody>
         </table>
-    <div class="row mt-2">
-                <div class="col-md-6">Paraf : <img src="{{ $disposisi->paraf }}" alt="Paraf" /></div>
-                <div class="col-md-6"></div>
-            </div>
+
+        <div>
+            <p>Paraf: <img src="{{ $disposisi->paraf }}" style="position:absolute;" alt="Paraf" height="50"/></p>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

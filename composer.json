@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.2",
         "aymanalhattami/filament-slim-scrollbar": "^2.0",
+        "barryvdh/laravel-dompdf": "^2.2",
         "bezhansalleh/filament-shield": "^3.2",
         "eightynine/filament-excel-import": "^3.0",
         "filament/filament": "^3.2",
