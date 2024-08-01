@@ -29,6 +29,10 @@ use Illuminate\Support\Str;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
+use Filament\Tables\Actions\Action;
+use Joaopaulolndev\FilamentPdfViewer\Infolists\Components\PdfViewerEntry;
+use Filament\Support\Enums\MaxWidth;
+
 class SuratMasukResource extends Resource
 {
     protected static ?string $model = SuratMasuk::class;
@@ -289,19 +293,31 @@ class SuratMasukResource extends Resource
                     ->options(fn (): array => Sifat::query()->pluck('ur_sifat', 'id')->all()),
                 SelectFilter::make('status_id')->label(__('form.status'))
                     ->options(fn (): array => Status::query()->pluck('ur_status', 'id')->all()),
-                // SelectFilter::make('status')
-                //     ->multiple()
-                //     ->options([
-                //         'Draft' => 'Draft',
-                //         'Reviewed' => 'Reviewed',
-                //         'Approved' => 'Approved',
-                //         'Archived' => 'Archived',
-                //     ]),
                 DateRangeFilter::make('tanggal_surat')->label(__('form.letter_date'))
                     ->disableRanges(),
                 
-            ], layout: FiltersLayout::AboveContentCollapsible)
+            ]
+            , layout: FiltersLayout::AboveContentCollapsible
+            )
             ->actions([ 
+                Action::make('lampiran_surat_masuk')
+                ->icon('heroicon-o-paper-clip')
+                ->color('warning')
+                ->label('')
+                    ->form(function ($record) {
+                        $files = $record->lampiran_surat_masuk ?? [];
+                
+                        $fileUrl = !empty($files) ? \Storage::url(end($files)) : null;
+                
+                        return [
+                            PdfViewerField::make('lampiran_surat_masuk')
+                            ->label(__('form.incoming_attachments'))
+                                ->fileUrl($fileUrl),
+                        ];
+                    })                    
+                    ->modalSubmitAction(false)
+                    ->modalWidth(MaxWidth::FiveExtraLarge)                   
+                    ->stickyModalHeader(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([               
                     Tables\Actions\ViewAction::make(),
@@ -313,6 +329,12 @@ class SuratMasukResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]) 
+            ->groups([
+                Tables\Grouping\Group::make('tanggal_agenda')
+                    ->label(__('form.agenda_date'))
+                    ->date()
+                    ->collapsible(),
             ]);
     }
 
@@ -322,7 +344,7 @@ class SuratMasukResource extends Resource
             SuratMasukRelationManagerResource\RelationManagers\DisposisisRelationManager::class,
         ];
     }
-
+    
     public static function getPages(): array
     {
         return [

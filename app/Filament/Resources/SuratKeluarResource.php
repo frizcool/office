@@ -30,6 +30,11 @@ use App\Models\User;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
+use Filament\Tables\Actions\Action;
+use Joaopaulolndev\FilamentPdfViewer\Infolists\Components\PdfViewerEntry;
+use Filament\Support\Enums\MaxWidth;
+// use Filament\Forms\Components\Actions\Modal\Actions\ButtonAction\Modal\Actions\ModalSubmitAction;
+
 class SuratKeluarResource extends Resource
 {
     protected static ?string $model = SuratKeluar::class;
@@ -234,6 +239,15 @@ class SuratKeluarResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('form.status'))
                     ->badge()
+                    ->icon(function (string $state): ?string {
+                        return match ($state) {
+                            'Konsep' => 'heroicon-o-pencil-square',    // Pencil icon for 'Konsep'
+                            'Tinjau Kembali' => 'heroicon-o-arrow-path', // Refresh icon for 'Tinjau Kembali'
+                            'Perbaikan' => 'heroicon-m-arrows-up-down',  // Adjustments icon for 'Perbaikan'
+                            'Disetujui' => 'heroicon-o-check-circle', // Check circle icon for 'Disetujui'
+                            default => 'heroicon-o-question-mark-circle',  // No icon for other statuses
+                        };
+                    })
                     ->color(function (string $state): string {
                         return match ($state) {
                             'Konsep' => 'primary',
@@ -288,7 +302,25 @@ class SuratKeluarResource extends Resource
                     ->label(__('form.letter_date'))
                     ->disableRanges(),
             ], layout: FiltersLayout::AboveContentCollapsible)
-            ->actions([
+            ->actions([  
+                Action::make('lampiran_surat_keluar')
+                    ->icon('heroicon-o-paper-clip')
+                    ->color('warning')
+                    ->label('')
+                        ->form(function ($record) {
+                            $files = $record->lampiran_surat_keluar ?? [];                    
+
+                            $fileUrl = !empty($files) ? \Storage::url(end($files)) : null;
+                            
+                            return [
+                                PdfViewerField::make('lampiran_surat_keluar')
+                                ->label(__('form.outgoing_attachments'))
+                                    ->fileUrl($fileUrl),
+                            ];
+                        })                    
+                        ->modalSubmitAction(false)
+                        ->modalWidth(MaxWidth::FiveExtraLarge)                   
+                        ->stickyModalHeader(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
@@ -300,6 +332,12 @@ class SuratKeluarResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->groups([
+                Tables\Grouping\Group::make('tanggal_agenda')
+                    ->label(__('form.agenda_date'))
+                    ->date()
+                    ->collapsible(),
             ]);
     }
 
@@ -311,7 +349,13 @@ class SuratKeluarResource extends Resource
             SuratKeluarRelationManagerResource\RelationManagers\DisposisiSuratKeluarsRelationManager::class,
         ];
     }
+    public static function getNavigationBadge(): ?string
+        {
+            /** @var class-string<Model> $modelClass */
+            $modelClass = static::$model;
 
+            return (string) $modelClass::where('status', 'Draft')->count();
+        }
     public static function getPages(): array
     {
         return [

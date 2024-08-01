@@ -9,6 +9,7 @@ Route::get('/welcome', function () {
     return view('welcome');
 });
 
+Route::get('disposisi/keluar/{id}', [DispositionController::class, 'generateDisposisiKeluar'])->name('disposisi.keluar');
 Route::get('/disposisi/export-pdf/{id}', [DispositionController::class, 'exportPdf'])->name('disposisi.exportPdf');
 Route::get('/disposisi/{id}/print', [DispositionController::class, 'print'])->name('disposisi.print');
 Route::get('/disposisi/{id}/print_v2', [DispositionController::class, 'print_v2'])->name('disposisi.print_v2');

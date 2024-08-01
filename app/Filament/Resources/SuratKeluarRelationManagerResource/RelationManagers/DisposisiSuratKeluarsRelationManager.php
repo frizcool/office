@@ -170,6 +170,11 @@ class DisposisiSuratKeluarsRelationManager extends RelationManager
                     ),
             ])
             ->actions([
+                Tables\Actions\Action::make('print')
+                    ->label('')
+                    ->color('primary')
+                    ->icon('heroicon-o-printer')
+                    ->url(fn ($record) => route('disposisi.keluar', ['id' => $record->id]), shouldOpenInNewTab: true),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()->color('info'),
                     Tables\Actions\EditAction::make()->color('info')

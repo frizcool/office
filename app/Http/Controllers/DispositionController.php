@@ -8,6 +8,7 @@ use App\Models\Kopstuk;
 use App\Models\User;
 use App\Models\DisposisiList;
 use Illuminate\Http\Request;
+use App\Models\DisposisiSuratKeluar;
 use PDF;
 
 class DispositionController extends Controller
@@ -71,5 +72,22 @@ class DispositionController extends Controller
 
         $pdf = PDF::loadView('dispositions.pdf', $data);
         return $pdf->stream('disposisi_'.$id.'.pdf');
+    }
+    public function generateDisposisiKeluar($id)
+    {
+        $disposisi = DisposisiSuratKeluar::findOrFail($id);
+        $suratKeluar = $disposisi->suratKeluar;
+        
+        $kopstuk = Kopstuk::where('kd_ktm', $disposisi->suratKeluar->kd_ktm)
+            ->where('kd_smk', $disposisi->suratKeluar->kd_smk)
+            ->first();
+        $data = [
+            'disposisi' => $disposisi,
+            'kopstuk' => $kopstuk,
+            'suratKeluar' => $suratKeluar,
+        ];
+
+        $pdf = Pdf::loadView('dispositions.keluar', $data);
+        return $pdf->stream('disposisi_surat_keluar_' . $id . '.pdf');
     }
 }

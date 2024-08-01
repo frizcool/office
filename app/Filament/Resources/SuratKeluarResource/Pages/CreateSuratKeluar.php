@@ -9,11 +9,11 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateSuratKeluar extends CreateRecord
 {
     protected static string $resource = SuratKeluarResource::class;
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        // Set the status to Draft before creating the record.
-        $data['status'] = 'Draft';
+    // protected function mutateFormDataBeforeCreate(array $data): array
+    // {
+    //     // Set the status to Draft before creating the record.
+    //     $data['status'] = 'Draft';
 
-        return $data;
-    }
+    //     return $data;
+    // }
 }
