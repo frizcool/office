@@ -21,7 +21,7 @@ use Swis\Filament\Backgrounds\FilamentBackgroundsPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Swis\Filament\Backgrounds\ImageProviders\MyImages;
 use Filament\Notifications\Livewire\DatabaseNotifications;
- 
+use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -82,6 +82,7 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('5s')
             ->plugins([
+                FilamentSpatieLaravelBackupPlugin::make()->usingQueue('my-queue')->noTimeout(),
                 FilamentBackgroundsPlugin::make()
                     ->remember(900)
                     ->imageProvider(

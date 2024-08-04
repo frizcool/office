@@ -33,14 +33,25 @@ use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 use Filament\Tables\Actions\Action;
 use Joaopaulolndev\FilamentPdfViewer\Infolists\Components\PdfViewerEntry;
 use Filament\Support\Enums\MaxWidth;
-// use Filament\Forms\Components\Actions\Modal\Actions\ButtonAction\Modal\Actions\ModalSubmitAction;
-
+use Filament\Pages\SubNavigationPosition;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\Group;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Components\TextareaEntry;
+use Filament\Infolists\Components\FileEntry;
+use Filament\Resources\Pages\Page;
+use Filament\Infolists\Components;
+use Hugomyb\FilamentMediaAction\MediaAction;
+use Hugomyb\FilamentMediaAction\MediaColumn;
 class SuratKeluarResource extends Resource
 {
     protected static ?string $model = SuratKeluar::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
     protected static ?int $navigationSort = 3;
 
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
     public static function getNavigationLabel(): string
     {
         return trans('global.label_outgoing_letter');
@@ -232,6 +243,9 @@ class SuratKeluarResource extends Resource
                     ->label(__('form.no_agenda'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
+            // MediaColumn::make('lampiran_surat_keluar')  // Add this line to include the media column
+            // ->label('Media Files'),
                 Tables\Columns\TextColumn::make('nomor_surat')
                     ->label(__('form.letter_number'))
                     ->searchable(),
@@ -321,6 +335,15 @@ class SuratKeluarResource extends Resource
                         ->modalSubmitAction(false)
                         ->modalWidth(MaxWidth::FiveExtraLarge)                   
                         ->stickyModalHeader(),
+            // ViewAction::make()
+            //     ->label('View')
+            //     ->modalHeading('Media Files')
+            //     ->form([
+            //         MediaAction::make('media')
+            //             ->label('View Media')
+            //             ->multiple()
+            //             ->disabled(), // Disable if you want only to view the media
+            //     ]),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
@@ -341,7 +364,67 @@ class SuratKeluarResource extends Resource
             ]);
     }
 
+    
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        
+        $files = $record->lampiran_surat_keluar ?? [];                    
 
+        $fileUrl = !empty($files) ? \Storage::url(end($files)) : null;
+        return $infolist
+            ->schema([
+                Components\Section::make(__('form.general_information'))
+                    ->schema([
+                        Components\Split::make([
+                            Components\Grid::make(2)
+                                ->schema([
+                                    Components\Group::make([
+                                        Components\TextEntry::make('nomor_agenda')
+                                            ->label(__('form.no_agenda')),
+                                        Components\TextEntry::make('nomor_surat')
+                                            ->label(__('form.letter_number')),
+                                        Components\TextEntry::make('tanggal_agenda')
+                                            ->label(__('form.agenda_date'))
+                                            ->badge()
+                                            ->date()
+                                            ->color('primary'),
+                                        Components\TextEntry::make('perihal')
+                                            ->label(__('form.subject'))
+                                            ->prose()
+                                            ->markdown(),
+                                    ]),
+                                    Components\Group::make([
+                                        Components\TextEntry::make('kepada')
+                                            ->label(__('form.to')),
+                                        Components\TextEntry::make('klasifikasiSurat.ur_klasifikasi')
+                                            ->label(__('form.classification')),
+                                        Components\TextEntry::make('status')
+                                            ->label(__('form.status'))
+                                            ->badge()
+                                            ->color('success')   ,
+                                    ]),
+                                ]),
+                                PdfViewerEntry::make('lampiran_surat_keluar')
+                                ->hiddenLabel()
+                                ->grow(false)
+                                ->fileUrl('https://9002-idx-office-1720079367933.cluster-7ubberrabzh4qqy2g4z7wgxuw2.cloudworkstations.dev/storage/Surat_Keluar/2024/01_08_2024_88117_AGDK_5_VIII_2024.pdf'),
+                        ])->from('lg'),
+                    ]),
+                Components\Section::make(__('form.additional_information'))
+                    ->schema([
+                        Components\TextEntry::make('rak.nama_rak')
+                            ->label(__('form.rack')),
+                        Components\TextEntry::make('lemari.nama_lemari')
+                            ->label(__('form.cabinet')),
+                        Components\TextEntry::make('loker.nama_loker')
+                            ->label(__('form.locker')),
+                    ])
+                    ->columns(3)
+                    ->hidden(fn() => !auth()->user()->hasRole('TU')),
+            ]);
+    }
+    
+    
  
     public static function getRelations(): array
     {
@@ -350,18 +433,27 @@ class SuratKeluarResource extends Resource
         ];
     }
     public static function getNavigationBadge(): ?string
-        {
-            /** @var class-string<Model> $modelClass */
-            $modelClass = static::$model;
+    {
+        /** @var class-string<Model> $modelClass */
+        $modelClass = static::$model;
 
-            return (string) $modelClass::where('status', 'Draft')->count();
-        }
+        return (string) $modelClass::where('status', 'Draft')->count();
+    }
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewSuratKeluar::class,
+            Pages\EditSuratKeluar::class,
+            // Pages\ManagePostComments::class,
+        ]);
+    }
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListSuratKeluars::route('/'),
             'create' => Pages\CreateSuratKeluar::route('/create'),
             'edit' => Pages\EditSuratKeluar::route('/{record}/edit'),
+            'view' => Pages\ViewSuratKeluar::route('/{record}'),
         ];
     }
 }

@@ -2,7 +2,7 @@
     @if(!empty($getState()))
         <iframe
             class="w-full"
-            src="{{ $getRoute($getState()) }}" style="min-height: {{ $getMinHeight() }};">
+            src="{{ $getRoute(array_values($getState())[0]) }}" style="min-height: {{ $getMinHeight() }};">
         </iframe>
     @elseif(!empty($getFileUrl()))
         <iframe
