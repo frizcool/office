@@ -17,7 +17,7 @@ class SifatResource extends Resource
 {
     protected static ?string $model = Sifat::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-folder';
 
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 4;

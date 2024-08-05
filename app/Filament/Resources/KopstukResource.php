@@ -19,7 +19,7 @@ class KopstukResource extends Resource
 {
     protected static ?string $model = Kopstuk::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-c-sparkles';
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 7;
     protected static ?string $navigationLabel = 'Kopstuk';

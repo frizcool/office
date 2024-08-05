@@ -23,6 +23,7 @@
         "laravel/tinker": "^2.9",
         "malzariey/filament-daterangepicker-filter": "^2.8",
         "openai-php/laravel": "^0.10.1",
+        "pxlrbt/filament-spotlight": "^1.2",
         "saade/filament-autograph": "^3.1",
         "shuvroroy/filament-spatie-laravel-backup": "^2.2",
         "stechstudio/filament-impersonate": "^3.9",

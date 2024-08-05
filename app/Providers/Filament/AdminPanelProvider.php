@@ -22,6 +22,12 @@ use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Swis\Filament\Backgrounds\ImageProviders\MyImages;
 use Filament\Notifications\Livewire\DatabaseNotifications;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
+use pxlrbt\FilamentSpotlight\SpotlightPlugin;
+use TomatoPHP\FilamentUsers\FilamentUsersPlugin;
+use TomatoPHP\FilamentTranslations\FilamentTranslationsPlugin;
+use TomatoPHP\FilamentTranslations\FilamentTranslationsSwitcherPlugin;
+use TomatoPHP\FilamentSettingsHub\FilamentSettingsHubPlugin;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -57,13 +63,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
-            ])
-            
+            ])            
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             // ->widgets([
             //     Widgets\AccountWidget::class,
-            //     Widgets\FilamentInfoWidget::class,
+            //     // Widgets\FilamentInfoWidget::class,
             // ])
             ->middleware([
                 EncryptCookies::class,
@@ -94,13 +99,13 @@ class AdminPanelProvider extends PanelProvider
                     
                 \Hugomyb\FilamentErrorMailer\FilamentErrorMailerPlugin::make(),
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
+                // SpotlightPlugin::make(),
                 BreezyCore::make()->myProfile(
-                    shouldRegisterUserMenu: true, // Sets the 'account' link in the panel User Menu (default = true)
-                    shouldRegisterNavigation: true, // Adds a main navigation item for the My Profile page (default = false)
-                    navigationGroup: 'Settings', // Sets the navigation group for the My Profile page (default = null)
-                    hasAvatars: false, // Enables the avatar upload form component (default = false)
-                    slug: 'my-profile' // Sets the slug for the profile page (default = 'my-profile')
-                ),
+                    shouldRegisterUserMenu: true,
+                    shouldRegisterNavigation: false,
+                    hasAvatars: false,
+                    slug: 'my-profile',
+                )->enableTwoFactorAuthentication(),
                 \TomatoPHP\FilamentUsers\FilamentUsersPlugin::make(),
                 // \TomatoPHP\FilamentTranslations\FilamentTranslationsPlugin::make(),
                 // \TomatoPHP\FilamentTranslations\FilamentTranslationsPlugin::make()->allowGPTScan(),

@@ -243,9 +243,7 @@ class SuratKeluarResource extends Resource
                     ->label(__('form.no_agenda'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
-            // MediaColumn::make('lampiran_surat_keluar')  // Add this line to include the media column
-            // ->label('Media Files'),
+                // Menampilkan nomor surat dari disposisi terakhir
                 Tables\Columns\TextColumn::make('nomor_surat')
                     ->label(__('form.letter_number'))
                     ->searchable(),
@@ -271,7 +269,6 @@ class SuratKeluarResource extends Resource
                             default => 'danger',
                         };
                     }),
-                // Menampilkan nama pengesah dari disposisi terakhir
                 Tables\Columns\TextColumn::make('latestDisposisiApproverName')
                     ->label(__('form.approver'))
                     ->searchable()
@@ -335,15 +332,6 @@ class SuratKeluarResource extends Resource
                         ->modalSubmitAction(false)
                         ->modalWidth(MaxWidth::FiveExtraLarge)                   
                         ->stickyModalHeader(),
-            // ViewAction::make()
-            //     ->label('View')
-            //     ->modalHeading('Media Files')
-            //     ->form([
-            //         MediaAction::make('media')
-            //             ->label('View Media')
-            //             ->multiple()
-            //             ->disabled(), // Disable if you want only to view the media
-            //     ]),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
@@ -405,9 +393,8 @@ class SuratKeluarResource extends Resource
                                     ]),
                                 ]),
                                 PdfViewerEntry::make('lampiran_surat_keluar')
-                                ->hiddenLabel()
-                                ->grow(false)
-                                ->fileUrl('https://9002-idx-office-1720079367933.cluster-7ubberrabzh4qqy2g4z7wgxuw2.cloudworkstations.dev/storage/Surat_Keluar/2024/01_08_2024_88117_AGDK_5_VIII_2024.pdf'),
+                                // ->hiddenLabel()
+                                ->grow(true),
                         ])->from('lg'),
                     ]),
                 Components\Section::make(__('form.additional_information'))

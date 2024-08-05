@@ -8,4 +8,5 @@ return [
     'label_disposisi_surat_keluar' => 'Disposisi Outgoing Letters',
     'label_disposisi_surat_masuk' => 'Disposisi Incoming Letters',
     'disposition'=>'Disposition',
+    'settings'=>'Settings',
 ];

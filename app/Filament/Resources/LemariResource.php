@@ -17,7 +17,7 @@ class LemariResource extends Resource
 {
     protected static ?string $model = Lemari::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-cube';
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 8;
     protected static ?string $navigationLabel = 'Lemari';

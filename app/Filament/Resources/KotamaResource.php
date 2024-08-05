@@ -17,7 +17,7 @@ class KotamaResource extends Resource
 {
     protected static ?string $model = Kotama::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-building-library';
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationLabel = 'Kotama';

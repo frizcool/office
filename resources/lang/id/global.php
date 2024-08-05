@@ -8,4 +8,5 @@ return [
     'label_disposisi_surat_keluar' => 'Disposisi Surat Keluar',
     'label_disposisi_surat_masuk' => 'Disposisi Surat Masuk',
     'disposition'=>'Disposisi',
+    'settings'=>'Pengaturan',
 ];

@@ -18,19 +18,29 @@ class ListSuratKeluars extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+    
     protected function getHeaderWidgets(): array
     {
         return SuratKeluarResource::getWidgets();
     }
+    
     public function getTabs(): array
     {
         return [
-            null => Tab::make('All'),
-            'Konsep' => Tab::make()->query(fn ($query) => $query->where('status', 'Konsep')),
-            'Tinjau Kembali' => Tab::make()->query(fn ($query) => $query->where('status', 'Tinjau Kembali')),
-            'Perbaikan' => Tab::make()->query(fn ($query) => $query->where('status', 'Perbaikan')),
-            'Disetujui' => Tab::make()->query(fn ($query) => $query->where('status', 'Disetujui')),
+            null => Tab::make('All')
+                ->icon('heroicon-o-document-text'),
+            'Konsep' => Tab::make()
+                ->query(fn ($query) => $query->where('status', 'Konsep'))
+                ->icon('heroicon-o-pencil'),
+            'Tinjau Kembali' => Tab::make()
+                ->query(fn ($query) => $query->where('status', 'Tinjau Kembali'))
+                ->icon('heroicon-o-eye'),
+            'Perbaikan' => Tab::make()
+                ->query(fn ($query) => $query->where('status', 'Perbaikan'))
+                ->icon('heroicon-s-arrow-path-rounded-square'),
+            'Disetujui' => Tab::make()
+                ->query(fn ($query) => $query->where('status', 'Disetujui'))
+                ->icon('heroicon-o-check-circle'),
         ];
-
     }
 }

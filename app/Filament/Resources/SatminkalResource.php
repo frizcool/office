@@ -23,7 +23,7 @@ class SatminkalResource extends Resource
 {
     protected static ?string $model = Satminkal::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationLabel = 'Satminkal';

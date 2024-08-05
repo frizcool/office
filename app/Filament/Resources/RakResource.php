@@ -17,7 +17,7 @@ class RakResource extends Resource
 {
     protected static ?string $model = Rak::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-archive-box';
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 10;
     protected static ?string $navigationLabel = 'Rak';

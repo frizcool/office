@@ -17,9 +17,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\UserResource\Pages;
-use STS\FilamentImpersonate\Tables\Actions\Impersonate;
-
+use TomatoPHP\FilamentUsers\Facades\FilamentUser;
+use TomatoPHP\FilamentUsers\Resources\UserResource\Pages;
+use App\Models\Kotama;
+use App\Models\Satminkal;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -42,14 +43,17 @@ class UserResource extends Resource
     {
         return trans('filament-users::user.resource.single');
     }
+
     public static function getNavigationGroup(): ?string
     {
-        return config('filament-users.group');
+        return trans('global.settings');
     }
+
     public function getTitle(): string
     {
         return trans('filament-users::user.resource.title.resource');
     }
+
     public static function form(Form $form): Form
     {
         $rows = [
@@ -60,74 +64,136 @@ class UserResource extends Resource
                 ->email()
                 ->required()
                 ->label(trans('filament-users::user.resource.email')),
+            Forms\Components\Select::make('kd_ktm')
+                ->label('Kotama')
+                ->options(Kotama::all()->pluck('ur_ktm', 'kd_ktm'))
+                ->required()->searchable()              
+                ->reactive()  
+                ->afterStateUpdated(fn(callable $set)=>$set('kd_smk',null)) ,
+            Forms\Components\Select::make('kd_smk')
+                ->label('Satminkal')
+                ->options(function (callable $get){
+                    if($get('kd_ktm')){
+                        return Satminkal::where('kd_ktm',$get('kd_ktm'))->pluck('ur_smk', 'kd_smk');
+                    }else{
+                        return Satminkal::all()->pluck('ur_smk', 'kd_smk');
+                    }   
+                })
+                ->required()->searchable(),
+                
+            TextInput::make('jabatan')
+            ->required()
+            ->label(trans('filament-users::user.resource.jabatan')),
             TextInput::make('password')
                 ->label(trans('filament-users::user.resource.password'))
                 ->password()
                 ->maxLength(255)
-                ->dehydrateStateUsing(static function ($state) use ($form) {
+                ->dehydrateStateUsing(static function ($state, $record) use ($form) {
                     return !empty($state)
-                            ? Hash::make($state)
-                            : User::find($form->getColumns())?->password;
+                        ? Hash::make($state)
+                        : $record->password;
                 }),
         ];
+
         if (config('filament-users.shield') && class_exists(\BezhanSalleh\FilamentShield\FilamentShield::class)) {
             $rows[] = Forms\Components\Select::make('roles')
-                ->multiple()
+                // ->multiple()
                 ->preload()
                 ->relationship('roles', 'name')
                 ->label(trans('filament-users::user.resource.roles'));
         }
-        $form->schema($rows);
+
+
+
+        $form->schema(array_merge($rows, FilamentUser::getFormInputs()));
+
         return $form;
     }
+
+
     public static function table(Table $table): Table
     {
-        if(class_exists( STS\FilamentImpersonate\Tables\Actions\Impersonate::class) && config('filament-users.impersonate')){
-            $table->actions([Impersonate::make('impersonate')]);
+        $actions = [
+            
+            // Tables\Actions\ActionGroup::make([    
+                ViewAction::make()->iconButton()->tooltip(trans('filament-users::user.resource.title.show')),
+                EditAction::make()->iconButton()->tooltip(trans('filament-users::user.resource.title.edit')),
+                DeleteAction::make()->iconButton()->tooltip(trans('filament-users::user.resource.title.delete')),
+            // ]),
+        ];
+        if(class_exists( \STS\FilamentImpersonate\Tables\Actions\Impersonate::class) && config('filament-users.impersonate')){
+            $actions[] = \STS\FilamentImpersonate\Tables\Actions\Impersonate::make('impersonate')->tooltip(trans('filament-users::user.resource.title.impersonate'));
         }
-        $table
-            ->columns([
-                TextColumn::make('id')
-                    ->sortable()
-                    ->label(trans('filament-users::user.resource.id')),
-                TextColumn::make('name')
-                    ->sortable()
-                    ->searchable()
-                    ->label(trans('filament-users::user.resource.name')),
-                TextColumn::make('email')
-                    ->sortable()
-                    ->searchable()
-                    ->label(trans('filament-users::user.resource.email')),
-                IconColumn::make('email_verified_at')
-                    ->boolean()
-                    ->sortable()
-                    ->searchable()
-                    ->label(trans('filament-users::user.resource.email_verified_at')),
-                TextColumn::make('created_at')
-                    ->label(trans('filament-users::user.resource.created_at'))
-                    ->dateTime('M j, Y')
-                    ->sortable(),
-                TextColumn::make('updated_at')
-                    ->label(trans('filament-users::user.resource.updated_at'))
-                    ->dateTime('M j, Y')
-                    ->sortable(),
-            ])
-            ->filters([
-                Tables\Filters\Filter::make('verified')
-                    ->label(trans('filament-users::user.resource.verified'))
-                    ->query(fn(Builder $query): Builder => $query->whereNotNull('email_verified_at')),
-                Tables\Filters\Filter::make('unverified')
-                    ->label(trans('filament-users::user.resource.unverified'))
-                    ->query(fn(Builder $query): Builder => $query->whereNull('email_verified_at')),
-            ])
-            ->actions([
-                ActionGroup::make([
-                    ViewAction::make(),
-                    EditAction::make(),
-                    DeleteAction::make()
-                ]),
-            ]);
-        return $table;
+
+
+        $columns = [
+            TextColumn::make('id')
+                ->sortable()
+                ->label(trans('filament-users::user.resource.id')),
+            TextColumn::make('name')
+                ->sortable()
+                ->searchable()
+                ->label(trans('filament-users::user.resource.name')),
+            TextColumn::make('email')
+                ->sortable()
+                ->searchable()
+                ->label(trans('filament-users::user.resource.email')),
+            TextColumn::make('kotama.ur_ktm')
+                ->label('Kotama')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->searchable(),
+            TextColumn::make('satminkal.ur_smk')
+                ->label('Satminkal')
+                ->searchable()                
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->default(function ($record) { 
+                    $row=Satminkal::where('kd_ktm',$record->kd_ktm)->where('kd_smk',$record->kd_smk)->first();
+                    return $row->ur_smk;
+                }),                
+            TextColumn::make('jabatan')
+                ->label(trans('filament-users::user.resource.jabatan'))
+                ->searchable(),
+            IconColumn::make('email_verified_at')
+                ->boolean()
+                ->sortable()
+                ->searchable()
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->label(trans('filament-users::user.resource.email_verified_at')),
+            TextColumn::make('created_at')
+                ->label(trans('filament-users::user.resource.created_at'))
+                ->dateTime('M j, Y')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->sortable(),
+            TextColumn::make('updated_at')
+                ->label(trans('filament-users::user.resource.updated_at'))
+                ->dateTime('M j, Y')
+                ->toggleable(isToggledHiddenByDefault: true)
+                ->sortable(),
+        ];
+
+        $filters = [
+            // Tables\Filters\Filter::make('verified')
+            //     ->label(trans('filament-users::user.resource.verified'))
+            //     ->query(fn (Builder $query): Builder => $query->whereNotNull('email_verified_at')),
+            // Tables\Filters\Filter::make('unverified')
+            //     ->label(trans('filament-users::user.resource.unverified'))
+            //     ->query(fn (Builder $query): Builder => $query->whereNull('email_verified_at')),
+            
+            Tables\Filters\SelectFilter::make('kd_ktm')->label('Kotama')
+            ->options(fn (): array => Kotama::query()->pluck('ur_ktm', 'kd_ktm')->all())->searchable(),
+            // Tables\Filters\SelectFilter::make('kd_smk')->label('Satminkal')
+            // ->options(fn (): array => Satminkal::query()->pluck('ur_smk', 'kd_smk')->all())->searchable(),
+        ];
+
+        return $table
+            ->columns(array_merge($columns, FilamentUser::getTableColumns()))
+            ->filters(array_merge($filters, FilamentUser::getTableFilters()))
+            ->actions(array_merge($actions, FilamentUser::getTableActions()));
+    }
+
+    public static function getRelations(): array
+    {
+        return FilamentUser::getRelationManagers();
     }
 
     public static function getPages(): array

@@ -17,7 +17,7 @@ class LokerResource extends Resource
 {
     protected static ?string $model = Loker::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-lock-open';
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 9;
     protected static ?string $navigationLabel = 'Loker';
