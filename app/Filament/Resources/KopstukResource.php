@@ -23,6 +23,24 @@ class KopstukResource extends Resource
     protected static ?string $navigationGroup = 'Utility';
     protected static ?int $navigationSort = 7;
     protected static ?string $navigationLabel = 'Kopstuk';
+    public static function getEloquentQuery(): Builder
+    {
+        // Get the user from the authentication context
+        $user = auth()->user();
+        
+        // Start building the query from the parent class method
+        $query = parent::getEloquentQuery()
+            ->where('kd_ktm', $user->kd_ktm);
+    
+        // Check if the user's role is not super_admin
+        if ($user->role !== 'super_admin') {
+            // Add additional condition if the user is not a super_admin
+            $query->where('kd_smk', $user->kd_smk);
+        }
+    
+        // Return the query builder
+        return $query;
+    }
 
     public static function form(Form $form): Form
     {

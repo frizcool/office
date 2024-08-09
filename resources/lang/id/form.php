@@ -21,8 +21,11 @@ return [
     'attachments' => 'Lampiran',
     'to' => 'Kepada',
     'from' => 'Dari',
+    'start_date'=>'Tanggal Mulai',
+    'end_date'=>'Tanggal Selesai',
     'outgoing_attachments' => 'Lampiran Surat Keluar',
     'incoming_attachments' => 'Lampiran Surat Masuk',
     'preview_attachments' => 'Preview Lampiran',
     'record_title' => 'Surat Masuk', // Add this line
+    'print'=>'Cetak',
 ];

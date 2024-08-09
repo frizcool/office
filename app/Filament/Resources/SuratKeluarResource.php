@@ -138,6 +138,7 @@ class SuratKeluarResource extends Resource
                             ->prefixIcon('heroicon-m-inbox-stack')
                             ->prefixIconColor('success'),
                         Forms\Components\DatePicker::make('tanggal_agenda')
+                            ->native(false)
                             ->label(__('form.agenda_date'))
                             ->helperText(__('form.generate_automatic'))
                             ->required()
@@ -163,7 +164,8 @@ class SuratKeluarResource extends Resource
                             ->prefixIconColor('secondary'),
                         Forms\Components\DatePicker::make('tanggal_surat')
                             ->label(__('form.letter_date'))
-                            ->required()
+                            ->required()                            
+                            ->native(false)
                             ->default(fn() => Carbon::now())
                             ->prefixIcon('heroicon-o-calendar')
                             ->prefixIconColor('primary'),
@@ -419,13 +421,13 @@ class SuratKeluarResource extends Resource
             SuratKeluarRelationManagerResource\RelationManagers\DisposisiSuratKeluarsRelationManager::class,
         ];
     }
-    public static function getNavigationBadge(): ?string
-    {
-        /** @var class-string<Model> $modelClass */
-        $modelClass = static::$model;
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     /** @var class-string<Model> $modelClass */
+    //     $modelClass = static::$model;
 
-        return (string) $modelClass::where('status', 'Draft')->count();
-    }
+    //     return (string) $modelClass::where('status', 'Draft')->count();
+    // }
     public static function getRecordSubNavigation(Page $page): array
     {
         return $page->generateNavigationItems([

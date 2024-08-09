@@ -21,8 +21,11 @@ return [
     'attachments' => 'Attachments',
     'to' => 'To',
     'from' => 'From',
+    'start_date'=>'Start Date',
+    'end_date'=>'End Date',
     'outgoing_attachments' => 'Outgoing Letter Attachments',
     'incoming_attachments' => 'Incoming Letter Attachments',
     'preview_attachments' => 'Preview Attachments',
     'record_title' => 'Incoming Letter', // Add this line
+    'print'=>'Print',
 ];

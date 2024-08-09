@@ -67,7 +67,7 @@ class StatsOverview extends BaseWidget
 
         // Menghitung jumlah notifikasi per bulan dalam satu tahun terakhir
         $notificationsChart = DatabaseNotification::select(DB::raw('strftime("%m", created_at) as month, COUNT(*) as count'))
-            // ->where('notifiable_id', $user->id)
+            ->where('notifiable_id', $user->id)
             // ->where('notifiable_type', get_class($user))
             ->where('created_at', '>=', $oneYearAgo)
             ->groupBy('month')

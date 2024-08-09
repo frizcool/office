@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\DisposisiList;
 use Illuminate\Http\Request;
 use App\Models\DisposisiSuratKeluar;
+use Illuminate\Support\Carbon;
 use PDF;
 
 class DispositionController extends Controller
@@ -36,14 +37,7 @@ class DispositionController extends Controller
             })->get();
         $kopstuk = Kopstuk::where('kd_ktm', $disposisi->suratMasuk->kd_ktm)
             ->where('kd_smk', $disposisi->suratMasuk->kd_smk)
-            ->first();
-        // return view('dispositions.print_v2', [
-        //     'disposisi' => $disposisi,
-        //     'kopstuk' => $kopstuk,
-        //     'pejabat' => $pejabat,
-        //     'disposisi_list' => $disposisi_list
-        // ]);
-        
+            ->first();        
         $data = [
             'disposisi' => $disposisi,
             'kopstuk' => $kopstuk,
@@ -89,5 +83,28 @@ class DispositionController extends Controller
 
         $pdf = Pdf::loadView('dispositions.keluar', $data);
         return $pdf->stream('disposisi_surat_keluar_' . $id . '.pdf');
+    }
+    public function cetak(Request $request)
+    {
+        
+        $kopstuk = Kopstuk::where('kd_ktm', auth()->user()->kd_ktm)
+        ->where('kd_smk', auth()->user()->kd_smk)
+            ->first();
+        // Ambil data sesuai dengan filter yang diterapkan
+        $suratMasuk = SuratMasuk::query();
+
+        // Apply filters from the request if any
+        if ($request->has('filters')) {
+            // Apply your filters logic here
+            $suratMasuk->whereDate('tanggal_agenda', $request->input('filters.tanggal_agenda'));
+            $suratMasuk->whereDate('tanggal_surat', $request->input('filters.tanggal_surat'));
+        }
+
+        $suratMasuk = $suratMasuk->get();
+
+        // Kirim data ke view untuk dicetak
+        $pdf = PDF::loadView('filament.pages.surat-masuk-reports-cetak', compact('suratMasuk'),[ 'kopstuk' => $kopstuk]);
+
+        return $pdf->stream('laporan_surat_masuk_' . Carbon::now()->format('d_m_Y_His') . '.pdf');
     }
 }

@@ -6,6 +6,7 @@ use App\Models\SuratMasuk;
 use App\Models\SuratKeluar;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Auth; // Import Auth untuk mendapatkan pengguna yang login
 class SuratMasukChart extends ChartWidget
 {
     protected static ?string $heading = 'Surat Masuk';
@@ -15,6 +16,7 @@ class SuratMasukChart extends ChartWidget
     // protected int | string | array $columnSpan = 'full';
     protected function getData(): array
     {
+        $user = Auth::user();
         $currentYear = now()->year;
 
         // Ambil data jumlah surat masuk per bulan dengan strftime untuk SQLite
@@ -22,6 +24,8 @@ class SuratMasukChart extends ChartWidget
                 DB::raw('strftime(\'%m\', created_at) as month'),
                 DB::raw('count(*) as count')
             )
+            ->where('kd_ktm', $user->kd_ktm)
+            ->where('kd_smk', $user->kd_smk)
             ->whereYear('created_at', $currentYear)
             ->groupBy('month')
             ->pluck('count', 'month')

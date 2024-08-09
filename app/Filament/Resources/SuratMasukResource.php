@@ -21,10 +21,10 @@ use Filament\Forms\Get;
 use App\Models\Satminkal;
 use App\Models\Status;
 use App\Models\Sifat;
-use App\Models\KlasifikasiSurat;
 use App\Models\Rak;
 use App\Models\Lemari;
 use App\Models\Loker;
+use App\Models\KlasifikasiSurat;
 use Illuminate\Support\Str;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
@@ -93,6 +93,7 @@ class SuratMasukResource extends Resource
     public static function generateNomorAgenda()
     {
         $lastRecord = SuratMasuk::latest('created_at')->first();
+        // dd($lastRecord);
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
         $romanMonth = self::getRomanMonth($currentMonth);
@@ -122,7 +123,8 @@ class SuratMasukResource extends Resource
                             ->prefixIcon('heroicon-m-inbox-stack')
                             ->prefixIconColor('success'),
                         Forms\Components\DatePicker::make('tanggal_agenda')
-                            ->label(__('form.agenda_date'))
+                            ->label(__('form.agenda_date'))                            
+                            ->native(false)
                             ->helperText(__('form.generate_automatic'))
                             ->required()
                             ->default(fn() => Carbon::now())
@@ -131,6 +133,7 @@ class SuratMasukResource extends Resource
                         Forms\Components\TimePicker::make('waktu_agenda')
                             ->label(__('form.agenda_time'))
                             ->required()
+                            ->seconds(false)
                             ->helperText(__('form.generate_automatic'))
                             ->default(fn() => Carbon::now())
                             ->prefixIcon('heroicon-o-clock')
@@ -154,7 +157,8 @@ class SuratMasukResource extends Resource
                             ->prefixIcon('heroicon-o-document-text')
                             ->prefixIconColor('secondary'),
                         Forms\Components\DatePicker::make('tanggal_surat')
-                            ->label(__('form.letter_date'))
+                            ->label(__('form.letter_date'))                            
+                            ->native(false)
                             ->required()
                             ->default(fn() => Carbon::now())
                             ->prefixIcon('heroicon-o-calendar')

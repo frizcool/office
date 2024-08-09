@@ -54,6 +54,13 @@ class UserResource extends Resource
         return trans('filament-users::user.resource.title.resource');
     }
 
+      public static function getNavigationBadge(): ?string
+    {
+        /** @var class-string<Model> $modelClass */
+        $modelClass = static::$model;
+
+        return (string) $modelClass::count();
+    }
     public static function form(Form $form): Form
     {
         $rows = [

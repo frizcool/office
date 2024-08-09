@@ -5,6 +5,7 @@ use Filament\Widgets\ChartWidget;
 use App\Models\SuratKeluar;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Auth; // Import Auth untuk mendapatkan pengguna yang login
 class SuratKeluarChart extends ChartWidget
 {
     protected static ?string $heading = 'Surat Keluar';
@@ -14,6 +15,7 @@ class SuratKeluarChart extends ChartWidget
     // protected int | string | array $columnSpan = 'full';
     protected function getData(): array
     {
+        $user = Auth::user();
         $currentYear = now()->year;
 
         // Ambil data jumlah surat Keluar per bulan dengan strftime untuk SQLite
@@ -21,6 +23,9 @@ class SuratKeluarChart extends ChartWidget
                 DB::raw('strftime(\'%m\', created_at) as month'),
                 DB::raw('count(*) as count')
             )
+
+            ->where('kd_ktm', $user->kd_ktm)
+            ->where('kd_smk', $user->kd_smk)
             ->whereYear('created_at', $currentYear)
             ->groupBy('month')
             ->pluck('count', 'month')

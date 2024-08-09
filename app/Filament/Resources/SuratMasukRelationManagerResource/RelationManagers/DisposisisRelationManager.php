@@ -76,7 +76,8 @@ class DisposisisRelationManager extends RelationManager
                                 ->default(Auth::user()->id)
                                 ->required(),
                             Forms\Components\DatePicker::make('tanggal_disposisi')
-                                ->required()
+                                ->required()                                
+                                ->native(false)
                                 ->label('Tanggal Disposisi')
                                 ->default(now()),
                             SignaturePad::make('paraf')
@@ -113,6 +114,7 @@ class DisposisisRelationManager extends RelationManager
                             ->required(),
                         Forms\Components\DatePicker::make('tanggal_disposisi')
                             ->required()
+                            ->native(false)
                             ->label('Tanggal Disposisi')
                             ->default(now()),
                         SignaturePad::make('paraf')
