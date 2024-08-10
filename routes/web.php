@@ -15,6 +15,7 @@ Route::get('/disposisi/{id}/print', [DispositionController::class, 'print'])->na
 Route::get('/disposisi/{id}/print_v2', [DispositionController::class, 'print_v2'])->name('disposisi.print_v2');
 
 Route::get('/surat-masuk-reports/cetak', [DispositionController::class, 'cetak'])->name('surat-masuk-reports.cetak');
+Route::get('/surat-keluar-reports/cetak_keluar', [DispositionController::class, 'cetak_keluar'])->name('surat-keluar-reports.cetak_keluar');
 // Route::get('/surat-keluar-reports/cetak_surat_masuk', [DispositionController::class, 'cetak_surat_keluar'])->name('disposisi.cetak_surat_keluar');
 
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Surat Masuk</title>
+    <title>Laporan Surat Keluar</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@
             /* margin-top: 20px; */
         }
         @page { 
-            margin-top: 50px; 
+            margin-top: 70px; 
             margin-bottom: 50px;
         }
 
@@ -20,7 +20,7 @@
         @page {
             @bottom-right {
                 content: counter(page);
-                /* font-size: 16px; */
+                /* font-size: 12px; */
                 margin-right: 20px;
             }
         }
@@ -64,33 +64,34 @@
         }
     </style>
 </head>
-@php
-\Carbon\Carbon::setLocale('id');
-@endphp
 <body>
     <!-- Kop surat -->
     <div class="text-center" style="width:48%;border-bottom: 1px solid black;">
             {!! nl2br(e($kopstuk->ur_kopstuk)) !!}
     </div>
     <br>
-    <h4 class="text-center">Laporan Surat Masuk</h4>
-    <table border="1" cellpadding="5" cellspacing="0">
+    <h4 class="text-center">Laporan Surat Keluar</h4>
+    
+@php
+\Carbon\Carbon::setLocale('id');
+@endphp
+    <table border="1" cellpadding="3" cellspacing="0">
         <thead>
             <tr>
                 <th>Nomor Agenda</th>
                 <th>Nomor Surat</th>
                 <th>Tanggal Surat</th>
-                <th>Diterima Dari</th>
+                <th>Kepada</th>
                 <th>Perihal</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($suratMasuk as $surat)
+            @foreach($suratKeluar as $surat)
                 <tr>
                     <td>{{ $surat->nomor_agenda }}</td>
                     <td>{{ $surat->nomor_surat }}</td>
                     <td>{{ \Carbon\Carbon::parse($surat->tanggal_surat)->translatedFormat('d F Y') }}</td>
-                    <td>{{ $surat->terima_dari }}</td>
+                    <td>{{ $surat->kepada }}</td>
                     <td>{{ $surat->perihal }}</td>
                 </tr>
             @endforeach

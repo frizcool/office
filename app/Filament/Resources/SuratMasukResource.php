@@ -37,7 +37,7 @@ class SuratMasukResource extends Resource
 {
     protected static ?string $model = SuratMasuk::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-tray';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = -3;
 
     public static function getNavigationLabel(): string
     {
@@ -59,6 +59,10 @@ class SuratMasukResource extends Resource
         return trans('global.label_incoming_letter_management');
     }
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('global.management');
+    }
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
@@ -257,7 +261,7 @@ class SuratMasukResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('form.status'))
                     ->badge()
-                    ->color('danger')
+                    ->color('primary')
                     ->getStateUsing(function (SuratMasuk $record) {
                         $lastDisposisi = $record->disposisis()->latest()->first();
                         return $lastDisposisi && $lastDisposisi->user ? "Disposisi oleh " . $lastDisposisi->user->jabatan : "Menunggu disposisi";
@@ -287,6 +291,11 @@ class SuratMasukResource extends Resource
                     ->label(__('form.nature'))                    
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(trans('filament-users::user.resource.created_at'))
+                    ->dateTime('M j, Y')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
             ])
            

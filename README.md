@@ -2,15 +2,16 @@
 
 ## Gambaran Umum
 
-E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang dikembangkan menggunakan Laravel dan Filament PHP. Aplikasi ini dirancang untuk memudahkan pengelolaan surat masuk dan surat keluar, dengan fokus pada pengarsipan dan pelacakan surat.
+E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang dikembangkan menggunakan bahasa pemograman PHP dan framework Laravel. Aplikasi ini dirancang untuk memudahkan pengelolaan surat masuk dan surat keluar, dengan fokus pada pengarsipan dan pelacakan surat.
 
 ## Fitur
 
 - **Manajemen Surat Masuk**: Mengelola dan mengarsipkan surat masuk dengan efisien.
 - **Manajemen Surat Keluar**: Mengelola dan melacak surat keluar.
+- **Manajemen Laporan**: Menghasilkan laporan surat masuk dan surat keluar sesuai kriteria tertentu.
 - **Pencarian dan Pengambilan**: Menemukan arsip surat dengan cepat menggunakan fitur pencarian yang canggih.
 - **Peran dan Izin Pengguna**: Menentukan peran dan izin untuk mengontrol akses dan tindakan dalam sistem.
-- **Dashboard dan Pelaporan**: Menghasilkan laporan dan melihat statistik aktivitas manajemen surat.
+- **Dashboard dan Widget**: Menghasilkan laporan dan melihat statistik aktivitas manajemen surat.
 - **Sistem Notifikasi**: Menerima notifikasi untuk kejadian dan tenggat waktu surat yang penting.
 
 ## Instalasi
@@ -19,7 +20,7 @@ E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang
 
 - PHP >= 8.2
 - Composer
-- SQLite (atau database lain yang didukung)
+- SQLite 
 - Node.js dan npm (untuk kompilasi aset front-end)
 
 ### Langkah-langkah
@@ -64,19 +65,6 @@ Setelah instalasi, Anda dapat mengakses aplikasi dengan menavigasi ke `http://lo
 
 Panel admin dibangun menggunakan Filament PHP, menyediakan antarmuka intuitif untuk mengelola pengguna, peran, izin, dan catatan surat. Anda dapat mengakses panel admin di `http://localhost:8000`.
 
-## Kontribusi
-
-Kami menyambut kontribusi dari komunitas! Untuk berkontribusi, ikuti langkah-langkah berikut:
-
-1. Fork repositori ini.
-2. Buat cabang baru (`git checkout -b fitur/nama-fitur-anda`).
-3. Lakukan perubahan dan commit (`git commit -m 'Tambah fitur tertentu'`).
-4. Push ke cabang (`git push origin fitur/nama-fitur-anda`).
-5. Buka Pull Request.
-
-## Lisensi
-
-Proyek ini dilisensikan di bawah Lisensi MIT - lihat file [LICENSE](LICENSE) untuk detailnya.
 
 ## Kontak
 

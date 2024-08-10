@@ -56,10 +56,10 @@ return [
             "flag" => "id"
         ],
         // "id"          => ["name" => "Indonesian",             "script" => "Latn", "native" => "Bahasa Indonesia", "flag" => "id" ],
-        "pt_BR" => [
-            "label" => "Português (Brasil)",
-            "flag" => "br"
-        ],
+        // "pt_BR" => [
+        //     "label" => "Português (Brasil)",
+        //     "flag" => "br"
+        // ],
         // "my" => [
         //     "label" => "Burmese",
         //     "flag" => "mm"

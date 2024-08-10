@@ -33,10 +33,11 @@ class ListSuratMasuks extends ListRecords
             null => Tab::make('All')->query(fn ($query) => $query), // Default tab to show all records
         ];
 
-        $klasifikasies = KlasifikasiSurat::all()->pluck('ur_klasifikasi');
+        $klasifikasies = KlasifikasiSurat::all();
 
         foreach ($klasifikasies as $klasifikasi) {
-            $tabs[$klasifikasi] = Tab::make()->query(fn ($query) => $query->where('klasifikasi_id', $klasifikasi));
+            $tabs[$klasifikasi->id] = Tab::make($klasifikasi->ur_klasifikasi)
+                ->query(fn ($query) => $query->where('klasifikasi_id', $klasifikasi->id));
         }
 
         return $tabs;

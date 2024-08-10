@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Disposisi;
 use App\Models\SuratMasuk;
+use App\Models\SuratKeluar;
 use App\Models\Kopstuk;
 use App\Models\User;
 use App\Models\DisposisiList;
@@ -93,12 +94,28 @@ class DispositionController extends Controller
         // Ambil data sesuai dengan filter yang diterapkan
         $suratMasuk = SuratMasuk::query();
 
-        // Apply filters from the request if any
-        if ($request->has('filters')) {
-            // Apply your filters logic here
-            $suratMasuk->whereDate('tanggal_agenda', $request->input('filters.tanggal_agenda'));
-            $suratMasuk->whereDate('tanggal_surat', $request->input('filters.tanggal_surat'));
-        }
+  // Apply filters from the request if they exist
+  if ($request->has('filters')) {
+    $filters = $request->input('filters');
+
+    // Access the correct array level and apply the 'tanggal_agenda' filter if present
+    if (!empty($filters['tanggal_agenda']['tanggal_agenda'])) {
+        $dates = explode(' - ', $filters['tanggal_agenda']['tanggal_agenda']);
+        $startDate = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+        $endDate = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+        $suratMasuk->whereBetween('tanggal_agenda', [$startDate, $endDate]);
+    }
+
+    // Access the correct array level and apply the 'tanggal_surat' filter if present
+    if (!empty($filters['tanggal_surat']['tanggal_surat'])) {
+        $dates = explode(' - ', $filters['tanggal_surat']['tanggal_surat']);
+        $startDate = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+        $endDate = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+        $suratMasuk->whereBetween('tanggal_surat', [$startDate, $endDate]);
+    }
+}
+
+
 
         $suratMasuk = $suratMasuk->get();
 
@@ -106,5 +123,43 @@ class DispositionController extends Controller
         $pdf = PDF::loadView('filament.pages.surat-masuk-reports-cetak', compact('suratMasuk'),[ 'kopstuk' => $kopstuk]);
 
         return $pdf->stream('laporan_surat_masuk_' . Carbon::now()->format('d_m_Y_His') . '.pdf');
+    }
+    public function cetak_keluar(Request $request)
+    {
+        
+        $kopstuk = Kopstuk::where('kd_ktm', auth()->user()->kd_ktm)
+        ->where('kd_smk', auth()->user()->kd_smk)
+            ->first();
+            // dd($kopstuk);
+        // Ambil data sesuai dengan filter yang diterapkan
+        $suratKeluar = SuratKeluar::query();
+
+ // Apply filters from the request if they exist
+ if ($request->has('filters')) {
+    $filters = $request->input('filters');
+
+    // Access the correct array level and apply the 'tanggal_agenda' filter if present
+    if (!empty($filters['tanggal_agenda']['tanggal_agenda'])) {
+        $dates = explode(' - ', $filters['tanggal_agenda']['tanggal_agenda']);
+        $startDate = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+        $endDate = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+        $suratKeluar->whereBetween('tanggal_agenda', [$startDate, $endDate]);
+    }
+
+    // Access the correct array level and apply the 'tanggal_surat' filter if present
+    if (!empty($filters['tanggal_surat']['tanggal_surat'])) {
+        $dates = explode(' - ', $filters['tanggal_surat']['tanggal_surat']);
+        $startDate = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+        $endDate = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+        $suratKeluar->whereBetween('tanggal_surat', [$startDate, $endDate]);
+    }
+}
+
+        $suratKeluar = $suratKeluar->get();
+
+        // Kirim data ke view untuk dicetak
+        $pdf = PDF::loadView('filament.pages.surat-keluar-reports-cetak', compact('suratKeluar'),[ 'kopstuk' => $kopstuk]);
+
+        return $pdf->stream('laporan_surat_keluar_' . Carbon::now()->format('d_m_Y_His') . '.pdf');
     }
 }

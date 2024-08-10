@@ -48,7 +48,7 @@ class SuratKeluarResource extends Resource
 {
     protected static ?string $model = SuratKeluar::class;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = -2;
 
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
@@ -71,7 +71,11 @@ class SuratKeluarResource extends Resource
     {
         return trans('global.label_outgoing_letter_management');
     }
-
+    
+    public static function getNavigationGroup(): ?string
+    {
+        return __('global.management');
+    }
     public static function getEloquentQuery(): Builder
     {
         // return parent::getEloquentQuery()
@@ -296,6 +300,11 @@ class SuratKeluarResource extends Resource
                 Tables\Columns\TextColumn::make('klasifikasiSurat.ur_klasifikasi')
                     ->label(__('form.classification'))
                     ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(trans('filament-users::user.resource.created_at'))
+                    ->dateTime('M j, Y')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
             ])

@@ -27,7 +27,7 @@ use TomatoPHP\FilamentUsers\FilamentUsersPlugin;
 use TomatoPHP\FilamentTranslations\FilamentTranslationsPlugin;
 use TomatoPHP\FilamentTranslations\FilamentTranslationsSwitcherPlugin;
 use TomatoPHP\FilamentSettingsHub\FilamentSettingsHubPlugin;
-
+use Filament\Enums\ThemeMode;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -55,9 +55,11 @@ class AdminPanelProvider extends PanelProvider
                 'success' => Color::Emerald,
                 'warning' => Color::Orange,
             ])
-            
+            // ->defaultThemeMode(ThemeMode::Light)
             // ->brandName('e-office')
-            // ->brandlogo(asset('images/favico.ico'))
+             ->brandlogo(asset('images/e-office.png'))
+             ->brandLogoHeight('4rem')
+             ->darkModeBrandLogo(asset('images/e-office-dark.png'))
             ->font('Chakra Petch')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
