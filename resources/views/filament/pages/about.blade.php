@@ -177,7 +177,7 @@ php artisan key:generate</code></pre>
                 <p><strong>Pangkat</strong><br> &nbsp;&nbsp;&nbsp; Serka</p>
                 <p><strong>NRP</strong><br> &nbsp;&nbsp;&nbsp; 21110057040790</p>
                 <p><strong>Kesatuan</strong><br> &nbsp;&nbsp;&nbsp; Infolahtadam III/Slw</p>
-                <p><strong>Email</strong><br> &nbsp;&nbsp;&nbsp; friswardani90@gmail.com</p>
+                <p><strong>Email</strong><br> &nbsp;&nbsp;&nbsp; support@frideoo.com / friswardani90@gmail.com</p>
             </div>
         </div>
         <br>

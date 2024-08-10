@@ -70,9 +70,6 @@ Panel admin dibangun menggunakan Filament PHP, menyediakan antarmuka intuitif un
 
 Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, jangan ragu untuk menghubungi kami di support@eoffice.com.
 
----
-
-Terima kasih telah menggunakan E-Office! Kami berharap aplikasi ini dapat membantu mempermudah proses manajemen perkantoran Anda.
 
 ## Biodata Programmer
 
@@ -80,3 +77,4 @@ Terima kasih telah menggunakan E-Office! Kami berharap aplikasi ini dapat memban
 **Pangkat:** Serka  
 **NRP:** 21110057040790  
 **Kesatuan:** Infolahtadam III/Slw
+**Email:** support@frideoo.com / friswardani90@gmail.com
