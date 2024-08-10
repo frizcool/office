@@ -72,6 +72,7 @@ Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, jangan ragu 
 
 
 ## Biodata Programmer
+<img src="https://deptmin.frideoo.com/storage/csgt_fris_wardani.jpg" alt="Fris Wardani's Profile Image" style="width: 200px;"/>
 
 Nama: Fris Wardani, S.Kom.  
 Pangkat: Serka  
