@@ -73,8 +73,8 @@ Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, jangan ragu 
 
 ## Biodata Programmer
 
-**Nama:** Fris Wardani, S.Kom.  
-**Pangkat:** Serka  
-**NRP:** 21110057040790  
-**Kesatuan:** Infolahtadam III/Slw
-**Email:** support@frideoo.com / friswardani90@gmail.com
+Nama: Fris Wardani, S.Kom.  
+Pangkat: Serka  
+NRP: 21110057040790  
+Kesatuan: Infolahtadam III/Slw  
+Email: friswardani90@gmail.com atau support@frideoo.com
