@@ -13,6 +13,10 @@ E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang
 - **Peran dan Izin Pengguna**: Menentukan peran dan izin untuk mengontrol akses dan tindakan dalam sistem.
 - **Dashboard dan Widget**: Menghasilkan laporan dan melihat statistik aktivitas manajemen surat.
 - **Sistem Notifikasi**: Menerima notifikasi untuk kejadian dan tenggat waktu surat yang penting.
+- **Back-up/Pencadangan**: Menyediakan fitur pencadangan yang memungkinkan pengguna untuk secara rutin mencadangkan data penting dan mengembalikan data dari cadangan saat dibutuhkan, sehingga menjamin keamanan dan kontinuitas data.
+- **Sistem Utilitas**: Menyediakan ulititas yang lengkap guna pendukung data aplikasi.
+- **Catatan Aktivitas (Log Activity)**: Mencatat setiap aktivitas pengguna dalam sistem, memungkinkan administrator untuk melacak dan memantau semua tindakan yang dilakukan dalam aplikasi, sehingga meningkatkan keamanan dan transparansi.
+- **Impersonate**: Fitur ini memungkinkan administrator untuk dengan mudah melakukan impersonasi pengguna lain. Ini sangat berguna untuk keperluan dukungan teknis atau untuk memeriksa hak akses tanpa harus meminta kredensial pengguna tersebut.
 
 ## Instalasi
 
