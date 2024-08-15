@@ -2,7 +2,7 @@
 
 ## Gambaran Umum
 
-E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang dikembangkan menggunakan bahasa pemograman PHP dan framework Laravel. Aplikasi ini dirancang untuk memudahkan pengelolaan surat masuk dan surat keluar, dengan fokus pada pengarsipan dan pelacakan surat.
+E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang dikembangkan menggunakan bahasa pemrograman PHP dan framework Laravel. Aplikasi ini dirancang untuk memudahkan pengelolaan surat masuk dan surat keluar, dengan fokus pada pengarsipan dan pelacakan surat. E-Office juga menerapkan konsep **Single Page Application (SPA)**, yang memungkinkan pengguna untuk berinteraksi dengan aplikasi secara lebih responsif dan efisien tanpa perlu memuat ulang halaman secara penuh setiap kali ada perubahan data.
 
 ## Fitur
 
