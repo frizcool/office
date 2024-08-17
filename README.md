@@ -52,7 +52,7 @@ E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang
 4. **Migrasi dan Seed Database**
    Jalankan migrasi dan seed database dengan data awal.
    ```bash
-   php artisan migrate --seed
+   php artisan migrate
    ```
 
 5. **Jalankan Aplikasi**
