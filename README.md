@@ -72,7 +72,7 @@ Panel admin dibangun menggunakan Filament PHP, menyediakan antarmuka intuitif un
 
 ## Kontak
 
-Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, jangan ragu untuk menghubungi kami di support@eoffice.com.
+Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, jangan ragu untuk menghubungi kami di support@frideoo.com.
 
 
 ## Biodata Programmer
