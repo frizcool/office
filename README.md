@@ -39,7 +39,7 @@ E-Office (Electronic Office) adalah sistem manajemen perkantoran elektronik yang
    ```bash
    composer install
    npm install
-   npm run dev
+   npm run build
    ```
 
 3. **Konfigurasi Lingkungan**
