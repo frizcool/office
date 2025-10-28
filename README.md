@@ -79,7 +79,7 @@ Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, jangan ragu 
 <img src="https://deptmin.frideoo.com/storage/csgt_fris_wardani.jpg" alt="Fris Wardani's Profile Image" style="width: 200px;"/>
 
 Nama: Fris Wardani, S.Kom.  
-Pangkat: Serka  
+Pangkat: Letda Czi
 NRP: 21110057040790  
 Kesatuan: Infolahtadam III/Slw  
 Email: friswardani90@gmail.com atau support@frideoo.com
