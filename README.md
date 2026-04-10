@@ -81,5 +81,5 @@ Jika Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, jangan ragu 
 Nama: Fris Wardani, S.Kom.  
 Pangkat: Letda Czi
 NRP: 21110057040790  
-Kesatuan: Infolahtadam III/Slw  
+Kesatuan: Yonif TP 815/WGT Rem 172 Dam XVII/Cen
 Email: friswardani90@gmail.com atau support@frideoo.com
